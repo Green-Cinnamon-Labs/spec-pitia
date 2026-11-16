@@ -1,4 +1,24 @@
-# Survey on Quantum Computing
+# spec-pitia
+
+> A Pítia, sacerdotisa do oráculo de Delfos, dava respostas que só faziam sentido como probabilidades a interpretar.
+
+Linha de pesquisa do [Green Cinnamon Labs](https://github.com/Green-Cinnamon-Labs) sobre computação quântica.
+
+## O que sei hoje
+
+- Quero entender como funcionam os computadores quânticos e as implementações físicas que eles têm hoje.
+- Quero acompanhar os breakthroughs e os algoritmos de correção de erros.
+- Quero entender os problemas que eles supostamente vão resolver, como descobrir a carteira de investimento mais eficiente.
+- Quero acompanhar os artigos no arXiv ([`referencias/`](referencias/)).
+- Nada aqui é fixo: um tema novo entra no livro quando aparecer, na ordem que fizer sentido.
+
+## Livro
+
+O caderno abaixo é o livro desta linha.
+
+---
+
+## O caderno: Survey on Quantum Computing
 
 Caderno de pesquisa reproduzível sobre computação quântica. O objetivo dele é explorar uma tese:
 
