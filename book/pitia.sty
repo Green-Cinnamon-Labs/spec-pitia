@@ -1,0 +1,111 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pitia}[2026/11/17 Pitia book style]
+
+\RequirePackage{xcolor}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds}
+\RequirePackage[font=small,labelfont={bf,sf},textfont=sf,skip=8pt]{caption}
+
+% ---------------------------------------------------------------------------
+% Palette
+%   Boxes:    amber = a story (who, when, what forced it)
+%             blue  = a key concept (what it is, what it costs)
+%   Diagrams: each color is a role, the same in every figure.
+% ---------------------------------------------------------------------------
+\definecolor{hfHistory}{HTML}{B4580A}
+\definecolor{hfHistoryBg}{HTML}{FDF4E7}
+\definecolor{hfConcept}{HTML}{1F5FA8}
+\definecolor{hfConceptBg}{HTML}{EAF2FB}
+
+\definecolor{hfSource}{HTML}{4A4A4A}  % the plant, a device, a data source
+\definecolor{hfReader}{HTML}{1F5FA8}  % programs that read: clients, screens
+\definecolor{hfStore}{HTML}{2E7D4F}   % storage: history, copies, archives
+\definecolor{hfBus}{HTML}{7B3FA0}     % something in the middle: broker, standard
+\definecolor{hfAlert}{HTML}{C0392B}   % a cost, a pain, something forbidden
+
+% ---------------------------------------------------------------------------
+% Boxes
+% ---------------------------------------------------------------------------
+\tcbset{
+  hf/box/.style={
+    enhanced, breakable,
+    boxrule=0pt, leftrule=3pt, arc=0pt, outer arc=0pt,
+    left=10pt, right=10pt, top=7pt, bottom=7pt,
+    before skip=12pt, after skip=12pt,
+    parbox=false,
+  },
+}
+% paragraphs inside boxes: no indent, a small gap
+\newcommand\hf@paras{\setlength{\parindent}{0pt}\setlength{\parskip}{0.45em}}
+
+% \begin{history}{1968 · Detroit} ... \end{history}
+\newtcolorbox{history}[1]{
+  hf/box, colback=hfHistoryBg, colframe=hfHistory,
+  before upper={\hf@paras{\sffamily\bfseries\footnotesize\color{hfHistory}%
+    HISTORY\enspace\textperiodcentered\enspace #1}\par\smallskip},
+}
+
+% \begin{concept}{Polling} ... \end{concept}
+\newtcolorbox{concept}[1]{
+  hf/box, colback=hfConceptBg, colframe=hfConcept,
+  before upper={\hf@paras{\sffamily\bfseries\footnotesize\color{hfConcept}%
+    KEY CONCEPT\enspace\textperiodcentered\enspace #1}\par\smallskip},
+}
+
+% ---------------------------------------------------------------------------
+% Code
+%   \begin{code} ... \end{code}          source code, light gray
+%   \begin{terminal} ... \end{terminal}  what a command printed, dark
+% ---------------------------------------------------------------------------
+\RequirePackage{listings}
+\tcbuselibrary{listings}
+\lstdefinelanguage{hfts}{
+  morekeywords={import,from,export,default,const,let,function,async,await,
+    return,if,for,of,as,new,throw,type,true,false},
+  sensitive=true,
+  morecomment=[l]{//},
+  morestring=[b]', morestring=[b]",
+}
+\lstdefinestyle{hf}{
+  basicstyle=\ttfamily\footnotesize, columns=fullflexible, keepspaces=true,
+  showstringspaces=false, upquote=true, breaklines=true,
+  keywordstyle=\color{hfConcept}\bfseries,
+  commentstyle=\color{black!50}\itshape,
+  stringstyle=\color{hfStore},
+  escapeinside={(*}{*)},
+}
+\newtcblisting{code}[1][]{
+  hf/box, colback=black!3, colframe=black!30, leftrule=2pt,
+  top=4pt, bottom=4pt, before skip=8pt, after skip=8pt,
+  listing only, listing options={style=hf,language=Python,#1},
+}
+\newtcblisting{terminal}[1][]{
+  hf/box, colback=black!82, colframe=black!82, leftrule=2pt, coltext=white,
+  top=4pt, bottom=4pt, before skip=8pt, after skip=8pt,
+  listing only, listing options={style=hf,#1},
+}
+
+% ---------------------------------------------------------------------------
+% Diagram styles
+% ---------------------------------------------------------------------------
+\tikzset{
+  hf/base/.style={draw, rounded corners=2pt, font=\sffamily\small, align=center,
+    minimum height=8mm, inner sep=4pt, line width=0.8pt},
+  hf/source/.style={hf/base, draw=hfSource, fill=hfSource!10},
+  hf/reader/.style={hf/base, draw=hfReader, fill=hfReader!10},
+  hf/bus/.style={hf/base, draw=hfBus, fill=hfBus!10},
+  hf/store/.style={draw=hfStore, fill=hfStore!10, line width=0.8pt,
+    cylinder, shape border rotate=90, aspect=0.22, minimum height=9mm,
+    minimum width=18mm, font=\sffamily\small, align=center, inner sep=3pt},
+  hf/flow/.style={-{Stealth[length=2.2mm]}, line width=0.8pt},
+  hf/ask/.style={hf/flow, draw=hfReader},
+  hf/answer/.style={hf/flow, draw=hfSource, dashed},
+  hf/push/.style={hf/flow, draw=hfBus},
+  hf/save/.style={hf/flow, draw=hfStore},
+  hf/pain/.style={line width=0.8pt, draw=hfAlert},
+  hf/note/.style={font=\sffamily\footnotesize, text=black!65, align=center},
+  hf/lifeline/.style={draw=black!25, line width=0.6pt},
+}
+
+\endinput

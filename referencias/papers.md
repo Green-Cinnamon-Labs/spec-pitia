@@ -21,7 +21,7 @@
 - **Lloyd (1996)** — Primeiros algoritmos de Hamiltonian simulation.
   *Universal Quantum Simulators.* Science 273, 1073.
 
-- **Berry, Brassard, Høyer, Mosca, Tapp (2007)** — Decomposição de Trotter.
+- **Berry, Ahokas, Cleve, Sanders (2007)** — Decomposição de Trotter.
   *Efficient quantum algorithms for simulating sparse Hamiltonians.* arXiv:quant-ph/0508139
 
 ## QSP / QSVT

@@ -12,9 +12,25 @@ Linha de pesquisa do [Green Cinnamon Labs](https://github.com/Green-Cinnamon-Lab
 - Quero acompanhar os artigos no arXiv ([`referencias/`](referencias/)).
 - Nada aqui é fixo: um tema novo entra no livro quando aparecer, na ordem que fizer sentido.
 
+## O eixo da linha
+
+Uma pergunta organiza tudo: **quanto falta para um computador quântico resolver um problema útil, e qual?** Responder é descer uma pilha:
+
+| Camada | Pergunta |
+| --- | --- |
+| Problema | Que problema real espera por isso, e como ele vira operador? |
+| Algoritmo | O que o circuito extrai, e a que custo? |
+| Correção de erros | Quantos qubits físicos fazem um qubit lógico? |
+| Hardware | Que tecnologia entrega esses qubits, e com que erro? |
+| Mercado | Quem vende cada camada, e o que dá para usar hoje? |
+
+Os artigos atravessam todas as camadas: cada um é lido perguntando em que camada mexe e quanto encurta a distância. A medida que acompanha isso é a estimativa de recursos (qubits e tempo por problema) contra o que o hardware entrega.
+
+As issues ficam neste hub e no [board](https://github.com/orgs/Green-Cinnamon-Labs/projects/12) (Linha = Pítia). O jeito de trabalhar está em [`WORKFLOW.md`](WORKFLOW.md).
+
 ## Livro
 
-O caderno abaixo é o livro desta linha.
+O livro está em [`book/`](book/), em LaTeX, com uma parte por camada. Os notebooks abaixo são o lado executável: os fundamentos entram no livro como capítulos, e os notebooks ficam como o lugar onde as contas rodam.
 
 ---
 
@@ -74,19 +90,14 @@ Os notebooks de **matemática** não partem de uma pergunta — eles consolidam 
 
 ## Trilha Núcleo
 
-Ordem cronológica de entendimento. Cada notebook parte de uma pergunta explícita.
+Ordem cronológica de entendimento. Cada notebook parte de uma pergunta explícita. As perguntas planejadas estão em [QUESTIONS.md](QUESTIONS.md).
 
-| Código | Pergunta | Digressões | Matemática | Status |
-|---|---|---|---|---|
-| [N-00](nucleo/N-00.ipynb) | Por que é possível computar com um qubit? | D-00 | — | rascunho |
-| [N-01](nucleo/N-01.ipynb) | O que uma operação quântica faz ao estado — e o que a medição consegue revelar sobre ela? | D-01, D-02 | M-00, M-05 | rascunho |
-| [N-02](nucleo/N-02.ipynb) | Por que a evolução precisa ser unitária, e o que o espectro diz sobre a dinâmica? | — | M-00 | esqueleto |
-| [N-03](nucleo/N-03.ipynb) | Como a fase de um autovalor migra para o registrador de controle? | D-02 | — | esqueleto |
-| [N-04](nucleo/N-04.ipynb) | Como um circuito extrai informação espectral de um operador? | D-03 | M-04 | esqueleto |
-| [N-05](nucleo/N-05.ipynb) | Como uma dinâmica contínua vira circuito, e qual o custo da aproximação? | D-03 | — | esqueleto |
-| [N-06](nucleo/N-06.ipynb) | Como um problema clássico se torna operador + preparação + medição? | D-04 | M-04 | esqueleto |
-| [N-07](nucleo/N-07.ipynb) | Qual a diferença entre autovalores e valores singulares? | D-05 | — | esqueleto |
-| [N-08](nucleo/N-08.ipynb) | O que QSP/QSVT realmente transforma? | D-05 | — | esqueleto |
+| Código | Pergunta | Status |
+|---|---|---|
+| [N-00](nucleo/N-00.ipynb) | Por que é possível computar com um qubit? | rascunho |
+| [N-01](nucleo/N-01.ipynb) | O que uma operação unitária faz ao estado? | rascunho |
+| [N-02](nucleo/N-02.ipynb) | Como eu codifico meu problema usando qubits? | rascunho (conflito de merge a resolver) |
+| [N-03](nucleo/N-03.ipynb) | Como eu posso medir o resultado? | esqueleto |
 
 ---
 
@@ -94,17 +105,15 @@ Ordem cronológica de entendimento. Cada notebook parte de uma pergunta explíci
 
 Desvios instrumentais curtos. Podem ser lidos fora de ordem.
 
-| Código | Título | Referenciado por | Status |
-|---|---|---|---|
-| [D-00](digressoes/D-00.ipynb) | O que é um qubit? | N-00 | rascunho |
-| [D-01](digressoes/D-01.ipynb) | Regra de Born e Colapso | N-01 | esqueleto |
-| [D-02](digressoes/D-02.ipynb) | Produtos Tensoriais | N-01, N-03 | esqueleto |
-| [D-03](digressoes/D-03.ipynb) | Comutadores e Erro de Trotter | N-04, N-05 | esqueleto |
-| [D-04](digressoes/D-04.ipynb) | O Problema de Simon | N-06 | esqueleto |
-| [D-05](digressoes/D-05.ipynb) | Block-Encoding Minimal | N-07, N-08 | esqueleto |
-| [D-06](digressoes/D-06.ipynb) | O Princípio da Incerteza de Heisenberg | D-00 | esqueleto |
-| [D-07](digressoes/D-07.ipynb) | A História da Computação Quântica | D-00 | esqueleto |
-| [D-08](digressoes/D-08.ipynb) | Arquiteturas Físicas do Qubit | D-00 | esqueleto |
+| Código | Título | Status |
+|---|---|---|
+| [D-00](digressoes/D-00.ipynb) | O que é um qubit? | rascunho |
+| [D-01](digressoes/D-01.ipynb) | A Máquina de Turing | rascunho |
+| [D-02](digressoes/D-02.ipynb) | Criptografia e Logaritmos | esqueleto |
+| [D-06](digressoes/D-06.ipynb) | O Princípio da Incerteza de Heisenberg | rascunho |
+| [D-07](digressoes/D-07.ipynb) | A História da Computação Quântica | rascunho |
+| [D-08](digressoes/D-08.ipynb) | Arquiteturas Físicas do Qubit | rascunho |
+| [D-09](digressoes/D-09.ipynb) | Correção de Erros em Algoritmos Quânticos | esqueleto |
 
 ---
 
@@ -112,14 +121,15 @@ Desvios instrumentais curtos. Podem ser lidos fora de ordem.
 
 Exploração matemática com vínculo explícito ao projeto. Última seção obrigatória: **"Por que isso importa para algoritmos quânticos?"**
 
-| Código | Título | Vínculo | Status |
-|---|---|---|---|
-| [M-00](matematica/M-00.ipynb) | Vetores, Espaços e o Espaço de Hilbert | N-01 em diante | rascunho |
-| [M-01](matematica/M-01.ipynb) | Mecânica Clássica: de Newton a Hamilton | D-00 | esqueleto |
-| [M-02](matematica/M-02.ipynb) | Mecânica Quântica: de Planck a Dirac | D-00 | esqueleto |
-| [M-03](matematica/M-03.ipynb) | A Máquina de Turing | D-00 | esqueleto |
-| [M-04](matematica/M-04.ipynb) | A Transformada de Fourier — da decomposição espectral à QFT | N-04, N-06 | esqueleto |
-| [M-05](matematica/M-05.ipynb) | Álgebra Linear: das Equações aos Tensores | N-01, D-02 | esqueleto |
+| Código | Título | Status |
+|---|---|---|
+| [M-00](matematica/M-00.ipynb) | Vetores, Espaços e o Espaço de Hilbert | rascunho |
+| [M-01](matematica/M-01.ipynb) | Mecânica Clássica: de Newton a Hamilton | rascunho |
+| [M-02](matematica/M-02.ipynb) | Mecânica Quântica: de Planck a Dirac | rascunho |
+| [M-04](matematica/M-04.ipynb) | A Transformada de Fourier: da decomposição espectral à QFT | rascunho |
+| [M-05](matematica/M-05.ipynb) | Álgebra Linear: das Equações aos Tensores | rascunho |
+
+A pasta [`revisando/`](revisando/) guarda um plano anterior, em inglês, ainda sem destino decidido.
 
 ---
 

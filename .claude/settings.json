@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(//c/Projetos/gclabs/spec-pitia/nucleo/**)",
+      "Edit(//c/Projetos/gclabs/spec-pitia/digressoes/**)",
+      "Edit(//c/Projetos/gclabs/spec-pitia/matematica/**)",
+      "Edit(//c/Projetos/gclabs/spec-pitia/revisando/**)",
+      "Edit(//c/Projetos/gclabs/spec-pitia/codigo/**)",
+      "Edit(//c/Projetos/gclabs/spec-pitia/praticas/**)",
+      "Write(//c/Projetos/gclabs/spec-pitia/nucleo/**)",
+      "Write(//c/Projetos/gclabs/spec-pitia/digressoes/**)",
+      "Write(//c/Projetos/gclabs/spec-pitia/matematica/**)",
+      "Write(//c/Projetos/gclabs/spec-pitia/revisando/**)",
+      "Write(//c/Projetos/gclabs/spec-pitia/codigo/**)",
+      "Write(//c/Projetos/gclabs/spec-pitia/praticas/**)",
+      "NotebookEdit(//c/Projetos/gclabs/spec-pitia/**)"
+    ]
+  }
+}
