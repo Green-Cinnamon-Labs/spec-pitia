@@ -3,6 +3,7 @@
 Leia `WORKFLOW.md` antes de qualquer coisa. O eixo da linha está no `README.md`: quanto falta para um computador quântico resolver um problema útil, e qual.
 
 - Nunca edite, crie ou commite notebooks (`nucleo/`, `digressoes/`, `matematica/`, `revisando/`), nem arquivos em `codigo/` ou `praticas/`. Quem escreve é o usuário. Leia o que for preciso para guiar e revisar.
+- Os outros repositórios da linha (as pastas do `pitia.code-workspace` além deste hub) também são do usuário: leia, não edite nem commite.
 - Guie as práticas por versão: "o que está assim hoje → mude para → por quê (1 a 3 linhas)", e depois como conferir. Sem teoria na sessão.
 - Todo conceito novo vem com a genealogia: quando surgiu, que problema o forçou a existir, o que ele corrige da solução anterior. Nunca regras soltas.
 - O livro (`book/`) é ditado pelo usuário. Não escreva nada nele sem um pedido explícito.

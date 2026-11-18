@@ -30,3 +30,17 @@ LaTeX em [`book/`](book/), uma parte por camada: problema, algoritmo, correção
 ## Commits
 
 [Conventional Commits](https://www.conventionalcommits.org/), em inglês, com `Refs #N`.
+
+## Repositórios
+
+Ficam todos lado a lado em `C:\Projetos\gclabs\`, e o workspace é o [`pitia.code-workspace`](pitia.code-workspace). As configurações do editor ficam no workspace, porque a `.vscode/` está no `.gitignore`.
+
+| Pasta | O que é |
+| --- | --- |
+| `spec-pitia` | este hub: os notebooks, o livro, as issues e este fluxo |
+
+Quando surgir um repositório novo da linha:
+
+1. Clone ao lado dos outros, em `C:\Projetos\gclabs\`.
+2. Acrescente a pasta em `folders` no workspace e uma linha nesta tabela.
+3. As issues continuam neste hub, com o repositório no título (`[prática][<repo>] ...`), e os commits do repositório novo usam `Refs Green-Cinnamon-Labs/spec-pitia#N`.
