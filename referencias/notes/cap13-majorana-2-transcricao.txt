@@ -1,0 +1,275 @@
+00:00:00 If you think about the way
+00:00:01 we process information,
+00:00:03 it fundamentally hasn't
+00:00:04 changed since the abacus.
+00:00:06 2,400 years of calculating by
+00:00:08 moving ones and zeros around.
+00:00:10 Quantum computing changes that.
+00:00:13 We've worked
+00:00:14 on topological quantum
+00:00:15 computing for 20 years.
+00:00:17 And we've known that
+00:00:19 it can work, in theory.
+00:00:20 There was a period in which
+00:00:22 we were
+00:00:22 completely lost.
+00:00:23 We didn't know which way was up.
+00:00:25 We did get to a point
+00:00:27 when things just
+00:00:28 started to click into place,
+00:00:29 from knowing what you want to do
+00:00:31 to actually starting to build it.
+00:00:33 When what was only theory is now real.
+00:00:37 We went from Majorana 1 and almost
+00:00:39 completely reinvented it in Majorana 2.
+00:00:42 We've seen a thousand x improvement
+00:00:43 in the stability of our quantum computer.
+00:00:53 The last year has been quite a wild ride
+00:00:56 as we've gone from Majorana 1 to Majorana 2.
+00:00:59 We changed the material stack.
+00:01:00 We changed the design.
+00:01:02 We changed
+00:01:02 the way we were doing the measurements.
+00:01:04 Somehow, they all came together
+00:01:06 at the same time and all landed.
+00:01:09 The superconductor in our device was
+00:01:11 aluminum previously,
+00:01:12 and the semiconductor was
+00:01:13 indium arsenide.
+00:01:14 We changed the
+00:01:15 material stack significantly.
+00:01:16 We replaced aluminum with lead,
+00:01:18 and we introduced antimony
+00:01:20 into the semiconductor.
+00:01:21 That gave us a new material with
+00:01:24 properties that were
+00:01:24 even better and led to this
+00:01:26 1000x improvement in that lifetime.
+00:01:28 And one big thing was the breakthroughs
+00:01:30 we made on the qubits,
+00:01:33 the bigger gaps,
+00:01:34 the longer lifetimes,
+00:01:36 thanks to lead.
+00:01:37 When you do an
+00:01:37 operation every microsecond
+00:01:39 and your qubit lives
+00:01:40 for about a millisecond,
+00:01:42 then it means there's one error every
+00:01:45 thousand operations.
+00:01:47 When it is
+00:01:48 a lifetime of tens of seconds
+00:01:50 and one operation takes a microsecond,
+00:01:52 that means you can do tens
+00:01:54 of millions of operations
+00:01:55 before an error.
+00:01:56 And now we're seeing it
+00:01:57 on 20-second timescale.
+00:01:58 And sometimes it's
+00:01:58 like minutes in between flips.
+00:02:00 And it takes the quantum world and puts
+00:02:02 it in units of like minutes, you know.
+00:02:05 It's kind of mind-blowing to
+00:02:06 have it in like a human scale.
+00:02:08 The larger that scale is,
+00:02:09 the more robust your qubit,
+00:02:11 the better its performance.
+00:02:12 And that dependence,
+00:02:14 that functional form, is exponential.
+00:02:16 It wasn't that we made a thousand x
+00:02:18 improvement in the underlying properties.
+00:02:20 It was
+00:02:20 improvements by a
+00:02:21 multiple of a few, two to three.
+00:02:23 But those multiples of on the order of
+00:02:24 two to three led to a thousand-fold
+00:02:27 improvement in this
+00:02:28 measure of performance.
+00:02:31 We've worked on
+00:02:32 topological quantum computing
+00:02:34 for 20 years.
+00:02:35 But for the last 20 years,
+00:02:37 that has been theory.
+00:02:39 What we see now is that
+00:02:40 lead was a wow moment.
+00:02:42 Lead was when we really saw
+00:02:44 what we theorized actually works.
+00:02:48 The quantum computer is
+00:02:49 much more than the qubits,
+00:02:50 just like a classical
+00:02:51 computer is more than
+00:02:53 the transistors.
+00:02:54 We have to control the qubits.
+00:02:56 We have to be able
+00:02:57 to measure them.
+00:02:58 We have to orchestrate them,
+00:03:00 and we have to be able
+00:03:01 to run our programs on them.
+00:03:03 So, we know how to build
+00:03:05 programs on quantum computers.
+00:03:06 We know how to put together this sequence
+00:03:08 of quantum operations,
+00:03:10 often called gates,
+00:03:11 to build out the circuits that
+00:03:13 implement an algorithm or
+00:03:14 allow us to run an application.
+00:03:16 We also have some fantastic tools
+00:03:19 in the form of
+00:03:20 the Quantum Development Kit
+00:03:21 and the Quantum Resource Estimator.
+00:03:24 So, we created the
+00:03:24 Quantum Resource Estimator
+00:03:26 to allow people to
+00:03:27 explore the trade-offs between
+00:03:30 a particular application
+00:03:31 or circuit that you need to run,
+00:03:32 the algorithms that you might
+00:03:34 use to implement that application,
+00:03:36 and the architectural considerations
+00:03:38 about the system it's going to run on.
+00:03:41 The quantum computer works on the principle
+00:03:42 of quantum mechanics.
+00:03:44 Quantum mechanics is the theory that
+00:03:46 describes how nature works at
+00:03:48 the smallest scales.
+00:03:50 And if I want to calculate the properties
+00:03:52 of a material, of a molecule, if I want
+00:03:54 to understand the chemical reaction,
+00:03:56 then I need to understand
+00:03:58 the behavior of the electrons
+00:04:00 in this molecule.
+00:04:02 And doing that exactly on a classical
+00:04:03 computer is exponentially hard.
+00:04:06 AI has helped us to increase
+00:04:07 the scale and speed
+00:04:09 with which we discover new materials
+00:04:11 or explore the details
+00:04:13 of chemical reactions.
+00:04:14 Our AI models right now,
+00:04:16 they're based on classical data,
+00:04:18 but when the system gets too big,
+00:04:19 they have to start making approximations.
+00:04:22 I put approximate data in,
+00:04:23 I get approximate answers out.
+00:04:25 Quantum changes all that.
+00:04:27 Quantum allows us to put the exact,
+00:04:29 ground-truth answer into the AI model
+00:04:32 and get first-time-right predictions
+00:04:34 out the other side.
+00:04:35 But those calculations will still take
+00:04:38 potentially hours or days.
+00:04:40 What we just want to do is we want to
+00:04:43 train an AI model to predict the results
+00:04:45 of the calculations.
+00:04:47 Then it will just take seconds and not
+00:04:49 hours to get the results.
+00:04:52 What that will enable is that your Copilot
+00:04:54 can not just write an essay,
+00:04:58 create an image, create a movie,
+00:05:00 but it can also then
+00:05:02 create materials and molecules
+00:05:03 because it understands quantum physics.
+00:05:07 That will totally change
+00:05:09 the way we make things.
+00:05:12 So, there are questions in chemistry,
+00:05:14 material science, physics
+00:05:16 that we just can't answer because
+00:05:18 we don't have the computing power.
+00:05:20 No classical computer on the planet
+00:05:22 can solve it.
+00:05:23 If we can unlock the answers,
+00:05:25 we will have a new path to discovering
+00:05:27 brand new materials.
+00:05:28 For example,
+00:05:29 superconductors that operate at
+00:05:31 room temperature
+00:05:32 or enable levitating
+00:05:34 magnetic transportation.
+00:05:35 Quantum computers are going to help us
+00:05:37 answer questions we just
+00:05:38 couldn't answer before.
+00:05:40 Skepticism is a valid
+00:05:41 and important part of science.
+00:05:42 I'm glad people are questioning and
+00:05:44 looking seriously at the work, right?
+00:05:45 I don't expect everyone to just, like, take
+00:05:47 everything at face value.
+00:05:48 You know, there's many things that are
+00:05:50 proprietary, that we can't share
+00:05:51 all the details.
+00:05:52 There have been people that have
+00:05:53 read our papers, looked at our stuff.
+00:05:55 Especially when they do it
+00:05:56 in good faith, where they're really
+00:05:57 just trying to get to the truth,
+00:05:58 that's always a good thing.
+00:06:00 Everyone who's looked
+00:06:01 very carefully
+00:06:02 and seriously at our results
+00:06:03 has seen that they are not only solid
+00:06:06 but really actually quite revolutionary.
+00:06:08 And, you know,
+00:06:09 if people are still skeptical,
+00:06:10 all I can say is, you know, there's more
+00:06:12 where that came from.
+00:06:13 And
+00:06:13 maybe we haven't knocked their socks off
+00:06:14 just yet. Pretty sure the next one will.
+00:06:17 I think we've just learned
+00:06:19 a lot along this journey.
+00:06:20 We were six to 12 months early,
+00:06:21 I think, in the material change we made.
+00:06:24 We've incorporated the
+00:06:25 use of AI-based tools.
+00:06:26 We've tightened the collaboration across
+00:06:28 various areas of the team.
+00:06:29 And very importantly,
+00:06:31 on the algorithms and application side,
+00:06:32 we've brought in some of those
+00:06:34 key applications that
+00:06:35 have enabled us to
+00:06:37 bring in those timelines.
+00:06:38 Right now
+00:06:38 we're targeting 2029
+00:06:40 for quantum computers that can
+00:06:44 solve some problems
+00:06:45 that haven't been
+00:06:46 solved before by other means.
+00:06:47 In the future, we'll build Majorana 3, 4,
+00:06:49 and 5, and the
+00:06:50 challenge now is scaling up.
+00:06:53 Just tremendous to think that we're a few
+00:06:55 years away from being able to start to
+00:06:57 use the types of scaled, fault-tolerant
+00:07:00 quantum computers that will unlock a
+00:07:02 whole new generation of applications in
+00:07:04 chemistry, material science, and beyond.
+00:07:08 I've been a part of this program since it
+00:07:10 was not even quite a program yet.
+00:07:12 Yeah, since the very beginning.
+00:07:13 I think I'm like employee two of
+00:07:14 the quantum program, basically.
+00:07:17 I've been blessed to work with some
+00:07:18 incredibly dedicated and brilliant
+00:07:20 people, which I find honestly humbling.
+00:07:23 We have been able to
+00:07:25 make devices and uncover properties
+00:07:27 that I wouldn't have
+00:07:28 dreamed of 20 years ago.
+00:07:30 And we're doing computation with it now.
+00:07:32 And that, to me, it's just blowing me away.
+00:07:35 So, at my core, I'm a technology nerd.
+00:07:37 I love working with new technologies.
+00:07:40 It's amazing to be part of an effort
+00:07:42 that's building a new form
+00:07:44 of quantum computing.
+00:07:46 There is
+00:07:47 nothing more transformative
+00:07:48 than quantum computing.
+00:07:50 It got to the point in my career
+00:07:52 when I said I need a quantum computer to
+00:07:54 do the research that I want to do.
+00:07:57 And that's why I joined Microsoft,
+00:07:58 to actually make it real
+00:07:59 and accelerate the path
+00:08:01 to getting it.
+00:08:02 There's much to discover.

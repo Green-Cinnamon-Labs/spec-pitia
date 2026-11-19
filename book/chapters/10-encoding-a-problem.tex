@@ -1,0 +1,250 @@
+\chapter{Encoding a Problem in Qubits}\label{ch:encoding}
+
+\begin{etymology}
+\textbf{Encode} comes from \emph{code}, from the Latin \emph{codex}, ``tree
+trunk'', then the wooden tablets used for writing, then a book, and finally a
+book of laws. To encode is to choose a set of symbols and rules to write something
+down.
+
+\textbf{Register} comes from \emph{regesta}, ``things written down'', from
+\emph{regerere}, ``to record''. The place where information is kept while you
+work with it.
+
+\textbf{Basis} is Greek for ``step'' or ``what you stand on''. The set of
+references you describe everything else with.
+\end{etymology}
+
+\begin{quote}
+To encode a problem in qubits is to decide what the basis states of a register
+stand for.
+\end{quote}
+
+In practice that means choosing a correspondence between configurations of the
+problem and strings of bits. A register of $n$ qubits has $2^n$ basis states, so
+encoding is deciding how the variables, candidates or answers of the problem are
+translated into those states. This chapter shows how that works in general, how
+Shor did it for factoring, and what each choice costs.
+
+\section{The computational basis is an alphabet}
+
+The basis states of a register are all the strings of $n$ bits. One qubit has
+$\ket0$ and $\ket1$. Two qubits have $\ket{00}, \ket{01}, \ket{10}, \ket{11}$. Three
+have eight, from $\ket{000}$ to $\ket{111}$.
+
+Imagine the eight states of three qubits are eight people. The first bit says
+whether a person wears a hat, the second whether they wear glasses, the third
+whether their hand is raised. Then $\ket{010}$ and $\ket{111}$ are not mysterious;
+they are labels for two profiles. Each basis state is one configuration of the
+problem.
+
+A classical computer that wants to find the people matching some rule checks them
+one by one. A quantum computer can put the register in a superposition of all
+eight and apply the rule to all of them in a single operation: ``everyone who
+matches, flip your sign''. The operation acts on every component of the
+superposition at once.
+
+That does not mean you can read the eight answers. A measurement returns one basis
+state. Getting the full record of every person is a question a quantum computer
+does not answer any better than a classical one. What it can do is interfere the
+signs so that the measurement is likely to return a person who matches. With $n$
+features there are $N = 2^n$ profiles. Checking them one by one costs $O(N)$; with
+Grover's interference it costs $O(\sqrt N)$.
+
+\section{Registers}
+
+A register is a group of qubits that together represent a number in binary. With
+three qubits, $\ket{101}$ means $1\cdot4 + 0\cdot2 + 1\cdot1 = 5$. So far this is
+exactly what a classical register does. The difference is that a Hadamard on each
+of the three qubits puts the register in an even superposition of all eight
+values, $0$ to $7$, at once. Three physical qubits, a space of eight dimensions.
+To hold the numbers from $0$ to $N - 1$ you need $\lceil \log_2 N \rceil$ qubits:
+four for $N = 15$, since $2^3 = 8 < 15 \leq 16 = 2^4$.
+
+\section{How Shor encodes factoring}
+
+Chapter~\ref{ch:factoring} reduced factoring to finding the period $r$ of $f(a) = x^a \bmod N$. Shor
+needed two things in the quantum state at the same time: the inputs $a$ being
+tried, and the value of $f$ at each of them. So he used two registers.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=7mm]
+  \node[hf/reader, minimum width=26mm, minimum height=10mm] (r1) {register 1\\{\footnotesize $t$ qubits, holds $a$}};
+  \node[hf/source, minimum width=26mm, minimum height=10mm, below=6mm of r1] (r2) {register 2\\{\footnotesize holds $x^a \bmod N$}};
+  \node[hf/bus, minimum width=12mm, minimum height=10mm, right=8mm of r1] (h) {$H^{\otimes t}$};
+  \node[hf/bus, minimum width=22mm, minimum height=26mm, right=8mm of h, yshift=-8mm] (u) {modular\\exponentiation};
+  \node[hf/bus, minimum width=14mm, minimum height=10mm, right=8mm of u, yshift=8mm] (qft) {QFT};
+  \node[hf/reader, minimum width=16mm, minimum height=10mm, right=8mm of qft] (m) {measure};
+  \draw[hf/ask] (r1) -- (h);
+  \draw[hf/ask] (h) -- (h -| u.west);
+  \draw[hf/ask] (h -| u.east) -- (qft);
+  \draw[hf/ask] (qft) -- (m);
+  \draw[hf/answer] (r2) -- (r2 -| u.west);
+  \node[hf/note, below=1mm of m, text width=26mm] {an integer close to a multiple of $q/r$};
+\end{tikzpicture}
+\caption{The structure of Shor's algorithm. The first register is put in
+superposition, the second receives $f(a)$ for every $a$ at once, and the Fourier
+transform turns the period hidden in the first register into something a
+measurement can see.}
+\end{figure}
+
+\textbf{Register 1} holds the exponent $a$. It has $t$ qubits, so it can represent
+$q = 2^t$ values, from $0$ to $q - 1$. Shor takes $t \approx 2\log_2 N$, for a
+reason that comes at the end. Hadamards on every qubit put it in an even
+superposition, while register 2 starts at zero:
+\[
+  \frac{1}{\sqrt q}\sum_{a=0}^{q-1} \ket{a}\ket{0}.
+\]
+The factor $1/\sqrt q$ keeps the norm at 1.
+
+\textbf{Register 2} receives $f(a)$. A circuit computes $x^a \bmod N$ for the value
+in register 1 and writes it into register 2. Since register 1 holds every value
+at once, the result is a table of all the pairs:
+\[
+  \frac{1}{\sqrt q}\sum_{a=0}^{q-1} \ket{a}\,\ket{x^a \bmod N}.
+\]
+The period is now encoded in this state. Every $a$ that gives the same value of
+$f$ is tied to it, and those $a$ are spaced exactly $r$ apart.
+
+\section{How modular exponentiation is computed}
+
+There is nothing mysterious in the circuit that computes $x^a \bmod N$. It is the
+classical method, made reversible. Write $a$ in binary,
+$a = a_0 + 2a_1 + 4a_2 + 8a_3 + \cdots$, where each $a_i$ is 0 or 1. Then
+\[
+  x^a = x^{a_0}\cdot x^{2a_1}\cdot x^{4a_2}\cdot x^{8a_3}\cdots,
+\]
+and each factor depends on a single bit: it is 1 if the bit is off and
+$x^{2^i}$ if it is on. For $a = 13 = 1101_2 = 1 + 4 + 8$, this gives
+$x^{13} = x\cdot x^4\cdot x^8$.
+
+The powers $x, x^2, x^4, x^8, \dots \bmod N$ are computed in advance, classically,
+by squaring repeatedly. The circuit then reads the bits of register 1 one at a
+time, and each bit controls whether register 2 is multiplied by its precomputed
+constant. With $t$ bits there are $t$ controlled multiplications, each on numbers
+of about $\log_2 N$ bits. That is where the $(\log N)^2$ of Shor's cost comes from
+(Chapter~\ref{ch:factoring}).
+
+\begin{history}{1961--1973 \textperiodcentered{} IBM}
+In 1961 Rolf Landauer showed that erasing a bit of information has an unavoidable
+energy cost. Charles Bennett, also at IBM, showed in 1973 that any computation can
+be made reversible, keeping enough information to run it backwards. Both results
+were about the thermodynamics of ordinary computers. They became essential to
+quantum computing, where every step must be unitary and therefore reversible: the
+quantum circuit for $x^a \bmod N$ is Bennett's construction applied to the
+schoolbook algorithm.
+\end{history}
+
+\section{Reading the period}
+
+The last step is a quantum Fourier transform on register 1 (Chapter~\ref{ch:fourier}).
+It turns a periodic pattern into peaks: the probability concentrates on values of
+$k$ close to multiples of $q/r$. For $N = 15$, $x = 2$ and a register of four
+qubits ($q = 16$), the period is $r = 4$, and the measurement returns $0$, $4$, $8$
+or $12$, each with probability exactly $1/4$. Dividing by $q$ gives
+$0, 1/4, 1/2, 3/4$: fractions with denominator $r = 4$.
+
+When $r$ does not divide $q$, the peaks are not exact. The measured $k/q$ is then
+only close to some $j/r$, and the classical method of continued fractions finds the
+fraction with the smallest denominator nearby. Taking $q \geq N^2$, that is,
+$t \approx 2\log_2 N$ qubits, makes the approximation good enough for continued
+fractions to find $r$ with high probability. That is the reason for the size of
+register 1.
+
+\section{What the encoding decided}
+
+Shor's choice of encoding decided everything that follows: which qubits carry which
+part of the problem, how the information is processed, and how it is read out. It
+also fixed the cost. Register 1 needs $O(\log N)$ qubits, modular exponentiation
+needs $O((\log N)^3)$ gates in the schoolbook version, and all of it must run under
+error correction, because noise anywhere in the exponentiation or the transform
+corrupts the period. That cost belongs to this encoding, not to factoring itself.
+Most of the progress in resource estimates since 1994 has come from finding cheaper
+ways to do the same arithmetic.
+
+\section{Three ways to encode}
+
+Shor's is one style. There are three broad ones, each with its own costs.
+
+\begin{concept}{Basis encoding}
+Each configuration of the problem is a basis state: $n$ binary variables, $n$
+qubits, and $\ket{x_1x_2\dots x_n}$ is one assignment of values. Used by Grover's
+algorithm, by Shor's, and by QAOA (Farhi, Goldstone and Gutmann, 2014) for
+combinatorial optimization.
+
+\textbf{What it fixes:} reading the answer is direct. You measure and get a string
+of bits.
+
+\textbf{What it costs:} the number of qubits grows linearly with the number of
+variables, and you still need interference to make the right string likely.
+\end{concept}
+
+\begin{concept}{Amplitude encoding}
+The data go into the values of the amplitudes, not into which basis state is which.
+A vector of $2^n$ numbers fits in $n$ qubits. Used by the HHL algorithm for linear
+systems (Harrow, Hassidim and Lloyd, 2009) and by many proposals for quantum
+machine learning.
+
+\textbf{What it fixes:} an exponential compression: $2^n$ numbers in $n$ qubits.
+
+\textbf{What it costs:} loading $2^n$ numbers into amplitudes generally takes
+$2^n$ steps, and reading them back out takes many measurements. Either cost can
+erase the advantage.
+\end{concept}
+
+Amplitude encoding is where most claims of exponential speedup for machine learning
+die. Scott Aaronson listed the fine print of HHL in 2015: the input must load fast,
+the matrix must be well behaved, and the output is a quantum state you can only
+sample. In 2018 Ewin Tang, an undergraduate at the University of Texas, showed that
+the most celebrated quantum recommendation algorithm could be matched by a classical
+one under the same assumptions about the input. When a quantum machine learning
+paper does not say how the data get into the amplitudes, assume they do not.
+
+\begin{concept}{Hamiltonian encoding}
+The problem goes into an operator, not into the initial state: build a Hamiltonian
+$\hat H$ whose lowest-energy state is the solution. Used in adiabatic quantum
+computing (Farhi and colleagues, 2000) and in the variational quantum eigensolver,
+VQE (Peruzzo and colleagues, 2014). Andrew Lucas showed in 2014 how to write many
+NP-hard problems this way.
+
+\textbf{What it fixes:} it is natural for optimization, and for chemistry and
+physics, where the Hamiltonian is the problem.
+
+\textbf{What it costs:} the Hamiltonian must be one the hardware can implement, and
+there is no guarantee that the system reaches its lowest-energy state in reasonable
+time.
+\end{concept}
+
+\section{The oracle}
+
+In many algorithms the problem shows up as an \emph{oracle}: a unitary $U_f$ that
+implements the function $f$ of the problem. Given $\ket{x}$, it marks the state
+according to $f(x)$, usually by flipping its sign. This is how Deutsch--Jozsa,
+Bernstein--Vazirani and Grover are stated. The answers are not in the initial
+state; they are in the effect the oracle has on the superposition. Here the encoding
+of the problem is the construction of $U_f$.
+
+That is also the trick hidden in Chapter~\ref{ch:qubit}: you can flip the sign of
+the right answer without knowing it, as long as you can \emph{check} an answer.
+The oracle is a circuit that checks. But an oracle is an assumption, not a gift.
+On real hardware someone has to build $U_f$ out of gates, and its cost has to be
+counted.
+
+\section{Three costs}
+
+Every encoding pays three costs, and they pull against each other:
+
+\begin{itemize}
+\item \textbf{qubits}: how many the mapping needs;
+\item \textbf{depth}: how many sequential operations it takes to prepare the state
+or apply the oracle;
+\item \textbf{readout}: how much information each measurement gives, and how many
+measurements you need.
+\end{itemize}
+
+Amplitude encoding uses few qubits but deep preparation and many measurements.
+Basis encoding uses more qubits and reads out directly. There is no encoding that
+is best in general, only one that suits the problem and the hardware. The thesis
+behind this whole book is that this step, turning a real problem into states,
+operators and measurements, is the hardest part of applying a quantum computer, and
+the one engineers are least prepared for.

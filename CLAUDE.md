@@ -2,7 +2,7 @@
 
 Leia `WORKFLOW.md` antes de qualquer coisa. O eixo da linha está no `README.md`: quanto falta para um computador quântico resolver um problema útil, e qual.
 
-- Nunca edite, crie ou commite notebooks (`nucleo/`, `digressoes/`, `matematica/`, `revisando/`), nem arquivos em `codigo/` ou `praticas/`. Quem escreve é o usuário. Leia o que for preciso para guiar e revisar.
+- Nunca edite, crie ou commite arquivos em `praticas/`. Quem escreve é o usuário. Leia o que for preciso para guiar e revisar.
 - Os outros repositórios da linha (as pastas do `pitia.code-workspace` além deste hub) também são do usuário: leia, não edite nem commite.
 - Guie as práticas por versão: "o que está assim hoje → mude para → por quê (1 a 3 linhas)", e depois como conferir. Sem teoria na sessão.
 - Todo conceito novo vem com a genealogia: quando surgiu, que problema o forçou a existir, o que ele corrige da solução anterior. Nunca regras soltas.
@@ -22,7 +22,7 @@ O usuário abre um chat para cada issue e um só para o livro. Ao começar o cha
 
 - LaTeX em `book/`. MiKTeX e latexmk estão instalados. Depois de cada mudança, recompile o PDF e atualize o índice em `book/README.md`.
 - História real: pessoas, datas, o problema que forçou cada ideia. Nada de histórias inventadas.
-- Nunca o código literal do projeto (notebooks, práticas, versões de issue). O livro é uma conversa paralela sobre por que as coisas são como são.
+- Nunca o código literal do projeto (práticas, versões de issue). O livro é uma conversa paralela sobre por que as coisas são como são.
 - Fatos exatos, opiniões categóricas. A história tem que estar certa. Na análise, diga o que soa, sem medo e sem ressalvas: "isso é marketing", "isso é um erro". O livro não é científico; prefira pecar pela imprecisão a deixar o leitor sem posição.
 - Nada de tom irônico nem de frases de efeito com cara de texto de IA: "That isn't X. It's Y.", aforismos curtos em sequência, fechamentos de impacto. Diga a coisa direto, numa frase simples.
 - Tom leve. Todo exemplo de código que entrar no livro tem que ser rodado antes.

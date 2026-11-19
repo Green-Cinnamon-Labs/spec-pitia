@@ -1,0 +1,137 @@
+\chapter*{How to Read This Book}
+\addcontentsline{toc}{chapter}{How to Read This Book}
+\markboth{HOW TO READ THIS BOOK}{HOW TO READ THIS BOOK}
+
+\begin{flushright}
+\itshape Lasciate ogne fretta, voi ch'intrate.\\[2pt]
+\upshape\small not quite Dante, \emph{Inferno}, canto III
+\end{flushright}
+
+Over the gate of Hell, Dante wrote: abandon all hope, ye who enter here. This book asks
+for less: abandon all haste.
+
+This is a dense book. It is packed with names, dates, formulas and numbers, and almost
+every page leans on something said before it. It assumes you will stop, go back a few
+pages, check a number, and come back. It was written for curious people: the ones who
+want to know why a thing is the way it is, who would rather spend an evening on one page
+than skim twenty, and who are not satisfied until the idea and the history behind it
+both make sense.
+
+One question runs through the whole book: how far are we from a quantum computer
+that solves a useful problem, and which problem would that be? Answering it means
+building the language first and then going down a stack, one layer at a time. The
+book has one part for the language and one for each layer, and each part answers one
+question the main one forces on you.
+
+The first part is the foundations, and the question is what a quantum computer is.
+It starts where the field started, with Richard Feynman asking in 1981 why we
+simulate nature with machines that do not work the way nature does. Then it builds
+the rest: what a computer can do at all, what a qubit is, where quantum mechanics
+came from, and the linear algebra underneath it.
+
+The second part is about the problems: which real problems are waiting for such a
+machine, and how each one turns into something it can act on. There are several, and
+they are not equally promising.
+
+The third part is about the algorithm: what the circuit extracts from the problem,
+and at what cost.
+
+The fourth part is about hardware: which technology delivers physical qubits, and
+with how much error.
+
+The fifth part is about error correction: how many of those physical qubits it takes
+to make one qubit you can trust.
+
+The sixth part is about the market: who sells each layer, and what you can actually
+use today.
+
+The parts are in the order in which the questions depend on each other, but the
+chapters are written in the order the study reaches each subject. A part can grow
+while the one before it is still thin, and when a chapter needs something from
+another part, it says where to find it.
+
+\section*{Every idea has a parent}
+
+No idea in this book showed up because it was elegant. Max Planck put energy in
+packets in 1900 because nothing else fitted the light coming out of a hot body, and
+he called it an act of desperation. Kenneth Wilson put quarks on a lattice in 1974
+because the strong force was too strong for the approximations that had worked for
+electrodynamics. Peter Shor found his factoring algorithm in 1994 by thinking about a
+paper by Daniel Simon that he had helped reject. Shor's nine-qubit code exists because
+Rolf Landauer said quantum computers could never correct their errors. The transmon
+was designed in 2007 because the superconducting qubits before it were ruined by stray
+electric charges. Each idea fixed something its predecessor got wrong and brought
+costs of its own. If you know the lineage, you know when the idea applies. If you only
+know the rule, you will apply it where it does not belong.
+
+\section*{Five kinds of boxes}
+
+Stories, concepts, questions, reflections and words are kept apart, so you
+always know which one you are reading.
+
+\begin{history}{year \textperiodcentered{} place}
+An amber box tells a story: who did it, when, and what forced the idea into
+existence. The people, the dates and the problems in it are real. No invented
+incidents.
+\end{history}
+
+\begin{concept}{name}
+A blue box defines an idea you will need again. It always ends the same way:
+
+\textbf{What it fixes:} the problem that made the idea worth having.
+
+\textbf{What it costs:} what you give up by using it.
+\end{concept}
+
+\begin{question}{the question you were embarrassed to ask}
+A teal box asks the question that occurs to anyone reading the paragraph above
+it and that nobody asks out loud, and then answers it.
+\end{question}
+
+\begin{reflection}{the thing that should bother you}
+A purple box stops on a statement that sounds absurd, or that the text just said
+in passing as if it were obvious, and works out what it means and why it is
+true.
+\end{reflection}
+
+\begin{etymology}
+A gray box says where a word comes from. The origin of a word is not its
+definition, but it often shows what the people who coined it were looking at.
+\end{etymology}
+
+The text between the boxes is the argument that connects them.
+
+\section*{Notation}
+
+Quantum states are written in the notation Paul Dirac introduced in 1939: $\ket{\psi}$
+for a state, $\bra{\phi}$ for its dual, $\braket{\phi|\psi}$ for the inner product of
+the two. You do not need to know it before starting. Chapter~\ref{ch:quantum} says
+where it came from, and Chapters~\ref{ch:hilbert} and~\ref{ch:state} say what it
+means.
+
+\section*{Numbers and figures}
+
+There is almost no code in this book, but every number in it was computed before it
+went in. When a figure shows data, such as random points or a curve, the data come
+from a real run with a fixed seed, and the script that produced them sits next to the
+figure in the book's sources.
+
+\section*{Exact facts, firm opinions}
+
+This is not a scientific book, and it does not pretend to be one.
+
+The history is checked. When the book says who did something and when, that is
+what happened. Hardware numbers, error rates and resource estimates change every
+few months, so every one of them comes with the date it was true.
+
+The opinions are another matter. When a press release announces a qubit nobody has
+shown to exist, the book calls it marketing. When a quantum machine learning paper does
+not say how the data get into the qubits, the book says the speedup is not there. When
+an analogy misleads, like the coin that is heads and tails at once, the book says so,
+even when an earlier chapter used it. Sometimes that will be unfair or imprecise, and
+we accept that.
+
+A reader who leaves with a position can argue with it, refine it, or throw it
+away. A reader who leaves with ``it depends'' has nothing to hold. Between being
+precise and leaving you with a position, this book prefers to give you a
+position.

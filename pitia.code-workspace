@@ -1,6 +1,6 @@
 {
   "folders": [
-    { "name": "spec-pitia (hub, notebooks e livro)", "path": "." }
+    { "name": "spec-pitia (hub e livro)", "path": "." }
   ],
   "settings": {
     "files.exclude": {
@@ -22,9 +22,7 @@
       "**/*.snm": true,
       "**/*.synctex.gz": true,
       "**/*.toc": true,
-      "**/*.xdv": true,
-      "**/__pycache__": true,
-      "**/.ipynb_checkpoints": true
+      "**/*.xdv": true
     }
   }
 }

@@ -1,0 +1,183 @@
+\chapter{State, Unitaries and Measurement}\label{ch:state}
+
+\begin{etymology}
+\textbf{State} comes from the Latin \emph{status}, from \emph{stare}, ``to
+stand''. The condition something stands in at a given moment, whatever path
+brought it there.
+
+\textbf{Unitary} comes from \emph{unitas}, ``oneness'', from \emph{unus},
+``one''. Something that stays whole. A unitary transformation can change the form
+of a state but keeps it whole.
+
+\textbf{Measurement} comes from \emph{mensura}, from \emph{metiri}, ``to measure'',
+to judge by comparison with a standard.
+\end{etymology}
+
+Chapter~\ref{ch:qubit} used the words state, unitary and measurement loosely.
+This chapter pins them down for a single qubit:
+
+\begin{quote}
+A unitary operation changes the state without destroying quantum information: it
+moves amplitudes and phases around but keeps the length of the state vector. A
+measurement does the opposite: it returns one result and replaces the
+superposition with it.
+\end{quote}
+
+\section{The state as a vector}
+
+Draw a vector of length 1 in the plane, at 45 degrees. Its shadows on the two
+axes have length $\cos 45^\circ = \sin 45^\circ = 1/\sqrt{2} \approx 0.707$. Tilt it
+to 30 degrees and the shadows become $0.866$ and $0.5$. Square them and you get
+$0.75$ and $0.25$, which add to 1, because the vector still has length 1.
+
+That is already the picture of a qubit. The vector is a combination of the two
+axes, and tilting it moves weight from one to the other while keeping the total
+fixed. The squared shadows are the probabilities of the two outcomes.
+
+What the plane cannot show is phase. The state of a qubit is a vector in
+$\mathbb{C}^2$: two complex numbers $(\alpha, \beta)$, each with a size and an
+angle. Sizes become probabilities; the angle between them, the relative phase,
+controls how the components combine. A real number describes a line. A pair of
+reals describes a plane. A single complex number already describes a plane, and
+two of them describe a qubit.
+
+\section{The Bloch sphere}
+
+Two complex numbers are four real numbers. Normalization,
+$|\alpha|^2 + |\beta|^2 = 1$, removes one. The global phase, which no measurement
+can see (Chapter~\ref{ch:hilbert}), removes another. Two remain, and two
+numbers describe a point on a sphere. Every state of one qubit can be written as
+\[
+  \ket{\psi} = \cos\tfrac{\theta}{2}\,\ket{0} + e^{i\varphi}\sin\tfrac{\theta}{2}\,\ket{1},
+\]
+where $\theta$ is the latitude, measured from the north pole, and $\varphi$ the
+longitude.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=2.1]
+  \draw[black!50, line width=0.7pt] (0,0) circle (1);
+  \draw[black!35, dashed] (1,0) arc (0:180:1 and 0.3);
+  \draw[black!50] (-1,0) arc (180:360:1 and 0.3);
+  \draw[black!35, -{Stealth[length=1.6mm]}] (0,0) -- (0,1.25) node[above, font=\sffamily\small, text=black] {$\ket{0}$};
+  \draw[black!35] (0,0) -- (0,-1) node[below, font=\sffamily\small, text=black] {$\ket{1}$};
+  \draw[black!35, -{Stealth[length=1.6mm]}] (0,0) -- (-0.55,-0.42) node[below left, font=\sffamily\scriptsize, text=black!60] {$x$};
+  \draw[black!35, -{Stealth[length=1.6mm]}] (0,0) -- (1.25,0) node[right, font=\sffamily\scriptsize, text=black!60] {$y$};
+  % latitude of the state theta = 60 deg: z = cos 60 = 0.5, radius sin 60 = 0.866
+  \draw[hfHistory, line width=0.7pt] (0.866,0.5) arc (0:-180:0.866 and 0.26);
+  \draw[hfHistory, dashed, line width=0.5pt] (0.866,0.5) arc (0:180:0.866 and 0.26);
+  \draw[hfConcept, line width=1.2pt, -{Stealth[length=2.2mm]}] (0,0) -- (-0.70,0.35);
+  \fill[hfConcept] (-0.70,0.35) circle (0.9pt);
+  \node[font=\sffamily\small, text=hfConcept] at (-0.88,0.22) {$\ket{\psi}$};
+  \draw[black!60] (0,0.32) arc (90:150:0.32 and 0.3);
+  \node[font=\sffamily\scriptsize] at (-0.1,0.42) {$\theta$};
+  \node[hf/note, text=hfHistory, anchor=west] at (1.05,0.55) {same $|\alpha|^2$, any $\varphi$};
+\end{tikzpicture}
+\caption{The Bloch sphere. $\ket{0}$ is at the north pole and $\ket{1}$ at the
+south pole. The latitude fixes the probabilities; moving around the circle of
+latitude changes only the relative phase.}
+\end{figure}
+
+\begin{history}{1946 \textperiodcentered{} Stanford}
+Felix Bloch introduced the sphere to describe nuclear spins in his work on
+nuclear magnetic induction, the basis of NMR and, much later, of MRI. Henri
+Poincaré had drawn the same sphere in 1892 for the polarization of light. The
+mathematics is identical, because both are two-level systems.
+\end{history}
+
+Fix $|\alpha|^2 = 0.75$ and $|\beta|^2 = 0.25$ and you fix the latitude: the
+state is at $\theta = 60^\circ$. But that does not fix the state. The relative
+phase $\varphi$ moves it around that circle of latitude without touching the
+probabilities. The state
+$\sqrt{0.75}\,\ket{0} + 0.5\,\ket{1}$, with $\varphi = 0$, sits at the point
+$(0.866, 0, 0.5)$. The sphere invents nothing; it only draws the two things a
+qubit state carries, how much and which phase, in a form the eye can follow.
+
+\section{Matrices}
+
+If a state is a vector, an operation on a state is something that takes a vector
+and returns another. In linear algebra that object is a \emph{matrix}. It can
+rotate, stretch, flip or mix the components of a vector, depending on its
+entries. A matrix is not just a table of numbers; it is the algebraic form of a
+transformation (Chapter~\ref{ch:linear}).
+
+\section{Unitary transformations}
+
+The state has length 1, and that is not a technicality: it is what makes the
+probabilities add to 100\%. So a physical operation cannot change a state any way
+it likes. If it stretched or shrank the vector, the probabilities would stop
+adding up. The operations allowed are the ones that preserve length.
+
+In the real plane, the transformations that change direction but not length are
+rotations. In complex space, they are called \emph{unitary}, and they satisfy
+\[
+  U^\dagger U = I ,
+\]
+where $U^\dagger$ is the conjugate transpose of $U$ and $I$ is the identity. A
+state evolves as $\ket{\psi'} = U\ket{\psi}$, and the condition guarantees that
+$\braket{\psi'|\psi'} = \braket{\psi|U^\dagger U|\psi} = \braket{\psi|\psi} = 1$.
+It also guarantees that $U$ has an inverse, $U^\dagger$, so every unitary step can
+be undone.
+
+\begin{concept}{Quantum gate}
+A unitary transformation used as an elementary step of a circuit, usually acting
+on one or two qubits. Deutsch introduced quantum circuits made of gates in 1989.
+
+\textbf{What it fixes:} complicated evolutions can be built from a small menu of
+simple, calibrated operations. A few gates (for example $H$, $T$ and CNOT) are
+enough to approximate any unitary.
+
+\textbf{What it costs:} every gate on real hardware has an error, and a useful
+algorithm needs millions or billions of them.
+\end{concept}
+
+The gates of Chapter~\ref{ch:qubit}, in matrix form:
+\[
+  H = \frac{1}{\sqrt 2}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix},
+  \qquad
+  Z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix},
+  \qquad
+  X = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}.
+\]
+$X$ swaps $\ket{0}$ and $\ket{1}$, the quantum NOT. $Z$ flips the sign of
+$\ket{1}$. On the Bloch sphere, each one is a rotation. And $HZH = X$: the
+interference trick of Chapter~\ref{ch:qubit}, sign flip between two
+Hadamards, is a NOT gate in disguise.
+
+\section{Measurement}
+
+Unitary evolution is smooth, reversible and deterministic. Measurement is none of
+those things. Measuring a qubit in the basis $\{\ket{0}, \ket{1}\}$ returns 0
+with probability $|\alpha|^2$ and 1 with probability $|\beta|^2$ (Born's rule,
+Chapter~\ref{ch:quantum}). Afterwards, the state is no longer
+$\alpha\ket{0} + \beta\ket{1}$: it is $\ket{0}$ or $\ket{1}$, whichever came out.
+Von Neumann wrote this \emph{projection postulate} into his 1932 book. Measuring
+again gives the same answer; the amplitudes are gone.
+
+So you never see a superposition. You see one outcome per run, and to estimate the
+amplitudes you have to prepare the same state and measure it many times. The goal
+of an algorithm is not to look at the superposition but to arrange the unitaries
+so that, at the moment of measurement, the useful answer has a high probability.
+
+Measuring in a different basis is the same as rotating first and then measuring in
+the standard one. Apply $H$ and measure, and you are asking whether the qubit was
+$\ket{+} = (\ket{0} + \ket{1})/\sqrt2$ or $\ket{-} = (\ket{0} - \ket{1})/\sqrt2$,
+a question about the relative phase that the standard measurement cannot answer.
+Every measurement answers some questions and destroys the answers to others.
+
+\section{Why complex amplitudes?}
+
+The interference of Chapter~\ref{ch:qubit} only used signs, $+$ and $-$. Real
+amplitudes with signs already reinforce and cancel. So why complex?
+
+Signs give two phases, $0$ and $180$ degrees. Complex numbers give a continuous
+circle of them, and quantum mechanics uses all of it: the time evolution
+$e^{-i\hat Ht}$ turns phases continuously, and the longitude $\varphi$ of the Bloch
+sphere would collapse to a single great circle without it.
+
+For a long time physicists suspected that the complex numbers might be a
+convenience, and that an equivalent theory with real numbers only could exist.
+For single systems it can. In 2021, Marc-Olivier Renou and colleagues showed that
+in networks with independent sources, real-number quantum theory makes different
+predictions from the standard one, and experiments in 2022 sided with complex
+numbers. The $i$ in quantum mechanics is not bookkeeping.

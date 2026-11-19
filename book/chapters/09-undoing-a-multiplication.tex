@@ -1,0 +1,228 @@
+\chapter{Undoing a Multiplication}\label{ch:factoring}
+
+\begin{etymology}
+\textbf{Factor} comes from the Latin \emph{factor}, ``the one who makes'', from
+\emph{facere}, ``to make''. To factor a number is to find the things that make
+it: to write it back as the product that produced it.
+
+\textbf{Modulus} is Latin for ``a small measure''. Gauss brought it into
+arithmetic in 1801, in the \emph{Disquisitiones Arithmeticae}.
+\end{etymology}
+
+There are several problems a quantum computer might solve better than a classical
+one, and they are not equally useful. Feynman's original one, simulating molecules
+and materials, is the one most likely to pay off. Optimization problems, like
+choosing the best investment portfolio, are the ones most often promised and the
+least supported by evidence. Factoring is neither. It is the problem that made the
+field famous, because it threatens the cryptography the internet runs on, and it is
+the one whose cost is best understood. That makes it the best place to start
+measuring how far away a useful machine is.
+
+The number 42 can be written as $2 \times 3 \times 7$. Finding those three
+numbers is what \emph{factoring} means: given a number, find the numbers that
+multiply to give it.
+
+For a computer, the two directions are very different. Multiplying two primes
+is trivial: $37 \times 53 = 1961$, and a machine does that with numbers
+thousands of digits long in a fraction of a second. Going back, from $1961$ to
+$37$ and $53$, is hard. For small numbers you can try divisors one by one. For
+numbers with hundreds of digits, nobody knows a fast way.
+
+This chapter is about why that matters, and about the move that made factoring
+the most famous problem in quantum computing: Peter Shor showed that factoring
+is the same as finding a period.
+
+\section{A lock that anyone can close}
+
+\begin{history}{1976--1977 \textperiodcentered{} Stanford and MIT}
+In 1976, Whitfield Diffie and Martin Hellman published ``New Directions in
+Cryptography'', proposing that two people could agree on a secret over a public
+channel. Their scheme rested on the discrete logarithm: computing $g^a \bmod p$
+is easy, recovering $a$ from the result is not. A year later, at MIT, Ron
+Rivest, Adi Shamir and Leonard Adleman built a system on a different hard
+problem, factoring. RSA was published in 1978. In 1997 the British government
+revealed that Clifford Cocks, at GCHQ, had found the same idea in 1973 and kept
+it secret.
+\end{history}
+
+\begin{concept}{Public-key cryptography}
+A pair of keys: a public one that anyone can use to lock a message, and a
+private one that unlocks it. In RSA, the public key contains a number
+$N = p \times q$, and the private key depends on knowing $p$ and $q$.
+
+\textbf{What it fixes:} two strangers can talk securely without ever meeting to
+exchange a secret.
+
+\textbf{What it costs:} all of the security rests on a hard problem that nobody
+has proved is hard. If someone finds a fast way to factor, the lock opens.
+\end{concept}
+
+\section{How hard is hard?}
+
+The best classical algorithm known for large numbers is the \emph{general number
+field sieve}. Its running time grows like
+\[
+  \exp\!\Big(c\,(\ln N)^{1/3}(\ln\ln N)^{2/3}\Big),
+  \qquad c = (64/9)^{1/3} \approx 1.923 .
+\]
+Read the formula piece by piece. $N$ is the number to factor, and $\ln N$ is
+proportional to its number of digits, the real measure of the size of the
+input. The main part of the exponent is $(\ln N)^{1/3}$; the
+$(\ln\ln N)^{2/3}$ factor grows very slowly. The result is called
+\emph{subexponential}: faster than any polynomial in the number of digits,
+slower than a pure exponential.
+
+\begin{history}{1988--1993 \textperiodcentered{} Pollard and the Lenstras}
+John Pollard proposed the idea of the number field sieve in 1988, in a letter
+to Andrew Odlyzko. Arjen Lenstra, Hendrik Lenstra, Mark Manasse and Pollard
+turned it into a working algorithm, and in 1990 they used it to factor the ninth
+Fermat number, $2^{512}+1$, which had resisted everything else. The general
+version, for any number, was published in 1993. Thirty years later it is still
+the best classical method for large numbers.
+\end{history}
+
+Plugging numbers in shows the shape of the growth. The table drops the
+lower-order terms hidden in the exact formula, so only the comparison between
+rows means anything.
+
+\begin{center}
+\begin{tabular}{lrr}
+\hline
+number & digits & $\exp(\dots)$ \\
+\hline
+$42$ & 2 & $\approx e^{3.6}$ \\
+$1961$ & 4 & $\approx e^{6.0}$ \\
+RSA-250 & 250 & $\approx 10^{24}$ \\
+RSA-2048 & 617 & $\approx 10^{35}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+RSA-250 is not a hypothetical row. In February 2020, a team led by Fabrice
+Boudot and Paul Zimmermann factored it with the number field sieve, using about
+2700 core-years of computation. It is the largest RSA challenge number
+factored so far. RSA-2048, the size used in practice, sits roughly eleven orders
+of magnitude further. Nobody is going to get there by waiting for faster
+classical machines.
+
+\section{Shor's answer}
+
+In 1994 Peter Shor, at Bell Labs, showed that a quantum computer can factor in
+polynomial time. His bound for the circuit is
+\[
+  O\!\big((\ln N)^2 \cdot \ln\ln N \cdot \ln\ln\ln N\big).
+\]
+The $(\ln N)^2$ term dominates. It comes from modular exponentiation, which
+does $O(\ln N)$ multiplications of numbers with $O(\ln N)$ digits. The
+$\ln\ln N$ and $\ln\ln\ln N$ terms come from the fast multiplication algorithm
+of Schönhage and Strassen used inside each step, and in practice they are small
+constants.
+
+There is no exponential anywhere. For RSA-2048, $(\ln N)^2$ is about
+$2\times10^{6}$ and the whole expression lands around $10^{7}$. That number counts
+elementary operations of an ideal machine. On real hardware every one of those
+operations has to be protected against errors, and that is where the real
+distance lies (Parts~\ref{part:hardware} and~\ref{part:qec}). In 2019, Craig Gidney and Martin Ekerå
+estimated that factoring RSA-2048 would take 20 million noisy physical qubits
+running for eight hours. In 2025, Gidney brought that down to under one million
+qubits, running for under a week. The largest gate-based machines of 2025 had
+on the order of a thousand physical qubits.
+
+So Shor did not make RSA breakable tomorrow. What he showed is that the
+difficulty of factoring is a fact about classical computers, not about the
+problem. The rest of this chapter is about how he found that out.
+
+\section{Factoring is finding a period}
+
+Shor did not attack factoring head-on. He used a reduction from number theory,
+known since Gary Miller's work on primality in 1976: if you can find the
+\emph{period} of a certain function, you can factor.
+
+Take the number $N$ to factor and pick some $x$ that shares no divisor with $N$
+other than 1 (that is, $\gcd(x, N) = 1$). Now compute the powers of $x$, but
+keep only the remainder of the division by $N$ at each step. That is what
+``mod $N$'' means: $a \bmod N$ is the remainder of $a$ divided by $N$, and
+$a \equiv b \pmod N$ means $a$ and $b$ leave the same remainder. The function is
+\[
+  f(a) = x^a \bmod N .
+\]
+Take $N = 15$ and $x = 2$:
+
+\begin{center}
+\begin{tabular}{r|rrrrrrrrrrrr}
+$a$ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\
+\hline
+$2^a$ & 1 & 2 & 4 & 8 & 16 & 32 & 64 & 128 & 256 & 512 & 1024 & 2048 \\
+$2^a \bmod 15$ & 1 & 2 & 4 & 8 & 1 & 2 & 4 & 8 & 1 & 2 & 4 & 8 \\
+\end{tabular}
+\end{center}
+
+The powers grow without end, but the remainders repeat: $1, 2, 4, 8$, and again.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=8mm, y=3.2mm]
+  \draw[black!40] (-0.3,0) -- (11.6,0);
+  \draw[black!40] (-0.3,0) -- (-0.3,9.5);
+  \foreach \a/\v in {0/1,1/2,2/4,3/8,4/1,5/2,6/4,7/8,8/1,9/2,10/4,11/8} {
+    \draw[hfConcept, line width=1.2pt] (\a,0) -- (\a,\v);
+    \fill[hfConcept] (\a,\v) circle (2.2pt);
+    \node[font=\sffamily\scriptsize, below] at (\a,0) {\a};
+  }
+  \foreach \v in {1,2,4,8} \node[font=\sffamily\scriptsize, left] at (-0.3,\v) {\v};
+  \foreach \s in {0,4,8} {
+    \draw[hfHistory, decorate, decoration={brace, amplitude=4pt}] (\s-0.1,9.8) -- (\s+3.1,9.8)
+      node[midway, above=3pt, font=\sffamily\scriptsize, text=hfHistory] {$r = 4$};
+  }
+  \node[font=\sffamily\small, below=5mm] at (5.5,0) {$a$};
+\end{tikzpicture}
+\caption{The function $2^a \bmod 15$. The remainders repeat every four steps:
+the period is $r = 4$.}
+\end{figure}
+
+The table does not show any factor of 15. It shows something else: the
+\emph{period} of the function, the smallest $r$ with $x^r \equiv 1 \pmod N$.
+Here $r = 4$. Now comes the algebra that turns the period into factors. The
+goal is modest: build a product that $N$ divides.
+
+If $x^r \equiv 1 \pmod N$, then $x^r - 1 \equiv 0 \pmod N$, which means $N$
+divides $x^r - 1$. So $x^r - 1$ is a bigger number that contains the factors of
+$N$. When $r$ is even, it splits as a difference of squares:
+\[
+  x^r - 1 = \big(x^{r/2} - 1\big)\big(x^{r/2} + 1\big).
+\]
+$N$ divides the product, so with some luck each factor of $N$ ends up in a
+different parenthesis. The greatest common divisor, which Euclid's algorithm
+computes fast, pulls them out. With $x = 2$ and $r = 4$, $x^{r/2} = 4$:
+\[
+  \gcd(4 - 1, 15) = 3, \qquad \gcd(4 + 1, 15) = 5 .
+\]
+And $15 = 3 \times 5$.
+
+It does not always go this well. If $r$ comes out odd, the difference of squares
+is not available. If $x^{r/2} \equiv -1 \pmod N$, all of $N$ falls into one
+parenthesis and the gcd returns $N$ itself, which is useless. Take $x = 14$:
+$14^2 = 196 \equiv 1 \pmod{15}$, so $r = 2$, but $14 \equiv -1$, and nothing
+comes out. In both cases you pick another $x$ and try again. For a number with
+at least two distinct odd prime factors, a random $x$ works at least half the
+time, so a few attempts are enough. And if the divisor you find is not prime,
+you have still split the problem into smaller numbers, and you keep going.
+
+\begin{concept}{Reduction to period finding}
+Factoring $N$ becomes: pick $x$, find the period $r$ of $x^a \bmod N$, compute
+$\gcd(x^{r/2} \pm 1, N)$.
+
+\textbf{What it fixes:} everything in this recipe is classically easy except one
+step, finding $r$. The hard part of factoring is isolated in a single, precise
+question.
+
+\textbf{What it costs:} classically, finding $r$ is as hard as factoring, because
+the period can be as large as $N$ itself. The reduction only pays off if
+something else can find periods fast.
+\end{concept}
+
+Periods are what Fourier analysis was made for, and a quantum computer can
+perform a Fourier transform on an exponentially large table of values in one go.
+That is Shor's algorithm in one sentence. How the table of $x^a \bmod N$ is
+written into qubits, and how the transform reads its period, is the subject of
+Part~\ref{part:algorithm}.

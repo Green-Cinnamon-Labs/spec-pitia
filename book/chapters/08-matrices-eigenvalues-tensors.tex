@@ -1,0 +1,322 @@
+\chapter{Matrices, Eigenvalues and the Tensor Product}\label{ch:linear}
+
+\begin{etymology}
+\textbf{Transformation} comes from \emph{transformare}: \emph{trans-},
+``across'', and \emph{formare}, ``to shape''. To carry something from one form
+to another according to rules.
+
+\textbf{Tensor} comes from the Latin \emph{tendere}, ``to stretch''. William
+Rowan Hamilton used the word in 1846 for something else (the length of a
+quaternion). Woldemar Voigt gave it its modern sense in 1898, for the quantities
+that describe how a crystal stretches and deforms differently in different
+directions.
+\end{etymology}
+
+Chapter~\ref{ch:hilbert} gave the space where states live. This one is about what
+acts on them, and about how the spaces of several qubits combine. Three ideas carry
+almost all of quantum computing: linear transformations, which are the gates;
+eigenvalues, which are what measurements and many algorithms extract; and the
+tensor product, which is where both the power of many qubits and entanglement
+come from.
+
+\section{Linear transformations and matrices}
+
+A transformation $T$ between vector spaces is \emph{linear} if it respects their
+structure:
+\[
+  T(\alpha u + \beta v) = \alpha\,T(u) + \beta\,T(v).
+\]
+Transforming a combination gives the same combination of the transformed
+vectors. Most functions are not linear, but the ones that are have a remarkable
+property: they are fully determined by what they do to the vectors of a basis.
+Write $T(e_1), \dots, T(e_n)$ as columns, and you have a matrix.
+
+\begin{history}{1850--1858 \textperiodcentered{} London}
+James Joseph Sylvester coined the word \emph{matrix}, Latin for womb, in 1850,
+for the rectangular array from which determinants are born. His friend Arthur
+Cayley, a lawyer who did mathematics on the side, published ``A Memoir on the
+Theory of Matrices'' in 1858. It treated matrices as objects in their own right,
+with addition and multiplication, and defined multiplication so that it composes
+transformations.
+\end{history}
+
+That is why matrix multiplication has its odd row-times-column formula: it was
+designed so that the matrix of ``apply $S$, then $T$'' is the product $TS$. A
+quantum circuit is a sequence of gates, so the matrix of a whole circuit is the
+product of the matrices of its gates.
+
+The determinant of a matrix measures how it scales areas (or volumes), with a
+sign for orientation. A determinant of zero means the transformation flattens the
+space and loses a dimension, so it cannot be undone. Unitary matrices always have
+determinants of absolute value 1.
+
+\section{Eigenvalues and eigenvectors}
+
+Most transformations mix directions: a vector along $e_1$ may be sent to some
+combination of $e_1$ and $e_2$. But some directions are special. They are only
+stretched or shrunk, never turned. A vector $v \neq 0$ with
+\[
+  T v = \lambda v
+\]
+is an \emph{eigenvector} of $T$, and $\lambda$ is its \emph{eigenvalue}: the
+direction stays, the scale changes by $\lambda$.
+
+\begin{history}{1829--1904 \textperiodcentered{} Paris and Göttingen}
+Cauchy proved in 1829 that symmetric matrices have real eigenvalues, while
+studying quadratic forms. The words came later. In 1904 Hilbert, working on
+integral equations, used \emph{Eigenwert}, ``own value'', and called the set of
+those values the \emph{spectrum} of the operator. He later said he had chosen
+the name with no idea that it would turn out to describe the spectra of atoms.
+Twenty years later it did: the energy levels of an atom are the eigenvalues of its
+Hamiltonian.
+\end{history}
+
+Operators for physical quantities are \emph{Hermitian} ($A = A^\dagger$), and
+their spectra are always real, as a measurement result must be. The
+\emph{spectral decomposition} says such an operator is entirely given by its
+eigenvectors and eigenvalues:
+\[
+  A = \sum_k \lambda_k \ket{v_k}\bra{v_k} .
+\]
+In the basis of its eigenvectors, $A$ is diagonal, and diagonal is simple.
+
+Take $A = \begin{pmatrix} 3 & 1 \\ 1 & 2 \end{pmatrix}$. Its eigenvalues are
+$(5 \mp \sqrt5)/2$, about $1.382$ and $3.618$. Along the two eigenvectors, $A$
+only stretches, by those factors. Every other vector gets turned. Rebuilding
+$\lambda_1\ket{v_1}\bra{v_1} + \lambda_2\ket{v_2}\bra{v_2}$ gives back $A$ exactly.
+
+\begin{concept}{Spectrum}
+The set of eigenvalues of an operator.
+
+\textbf{What it fixes:} it reduces an operator to the numbers that matter. For a
+Hamiltonian, they are the energies; for a measurement, the possible results.
+
+\textbf{What it costs:} for a matrix of size $2^n$, computing the spectrum
+classically takes time that grows with $2^n$. Extracting it on a quantum computer
+is what phase estimation does, and a large part of useful quantum computing is,
+underneath, spectral processing.
+\end{concept}
+
+\section{Tensors}
+
+A vector has one index, $v_i$; a matrix has two, $M_{ij}$. A \emph{tensor} can
+have any number. But a tensor is not just a table with many indices. It is a table
+that changes in a specific way when you change the basis, so that equations
+written with tensors look the same in every coordinate system.
+
+\begin{history}{1887--1915 \textperiodcentered{} Padua and Zurich}
+Gregorio Ricci-Curbastro developed an ``absolute differential calculus'' in the
+1880s and 1890s, a way of writing geometry that does not depend on coordinates.
+With his student Tullio Levi-Civita he published the full method in 1900. Almost
+nobody used it until Marcel Grossmann showed it to his friend Albert Einstein in
+1912. Einstein needed exactly that to describe curved spacetime, and general
+relativity, in 1915, is written in tensors.
+\end{history}
+
+Quantum computing uses less of this machinery than the name suggests. What it
+uses all the time is one operation that builds new spaces out of old ones.
+
+\section{The tensor product}
+
+Given two spaces $V$ and $W$, of dimensions $m$ and $n$, the \emph{tensor product}
+$V \otimes W$ is a space of dimension $mn$. If $\{e_i\}$ is a basis of $V$ and
+$\{f_j\}$ a basis of $W$, the $mn$ products $e_i \otimes f_j$ are a basis of
+$V \otimes W$.
+
+One qubit lives in $\mathbb{C}^2$. Two qubits live in
+$\mathbb{C}^2 \otimes \mathbb{C}^2 = \mathbb{C}^4$, with basis
+$\ket{00}, \ket{01}, \ket{10}, \ket{11}$. And $n$ qubits live in
+$\mathbb{C}^{2^n}$. Dimensions multiply: each new qubit doubles the size of the
+space.
+
+That doubling is the source of both the promise and the problem. Describing 50
+qubits on a classical computer takes $2^{50} \approx 1.1\times10^{15}$ complex
+amplitudes. At 16 bytes each, that is about 18 petabytes of memory, for one state.
+This is Feynman's argument from Chapter~\ref{ch:history}, in numbers.
+
+\section{Entanglement}
+
+Some states of two qubits can be written as a product of one state for each:
+$\ket{0}\otimes\ket{1} = \ket{01}$, or
+$\ket{+}\otimes\ket{+} = \tfrac12(\ket{00} + \ket{01} + \ket{10} + \ket{11})$.
+These are \emph{separable}. But most vectors of $V \otimes W$ cannot be split this
+way. The simplest example is the Bell state
+\[
+  \ket{\Phi^+} = \frac{\ket{00} + \ket{11}}{\sqrt 2} .
+\]
+Try to write it as $(a\ket0 + b\ket1)\otimes(c\ket0 + d\ket1)$: you need $ac$ and
+$bd$ to be nonzero and $ad$ and $bc$ to be zero, which is impossible. The two qubits
+have no state of their own. Only the pair does.
+
+\begin{history}{1935 \textperiodcentered{} Princeton and Oxford}
+Einstein, Boris Podolsky and Nathan Rosen published a paper arguing that states
+like this show quantum mechanics is incomplete. Schrödinger answered the same year
+and gave the phenomenon its name, \emph{Verschränkung}, which he translated as
+\emph{entanglement}. He called it ``not one but rather the characteristic trait of
+quantum mechanics''.
+\end{history}
+
+\begin{concept}{Entanglement}
+A state of several systems that cannot be written as a product of states of each
+system. Mathematically, non-separability in the tensor product.
+
+\textbf{What it fixes:} correlations between qubits live in the state itself,
+with no extra bits to store them. Every algorithm with an exponential speedup
+produces large amounts of it.
+
+\textbf{What it costs:} entangled states are fragile. Disturbing one qubit
+disturbs the whole state, and the environment is always disturbing something.
+\end{concept}
+
+\section{Measuring entanglement: the Schmidt decomposition}
+
+Any state of two systems can be written as
+\[
+  \ket{\psi} = \sum_{k=1}^{r} \lambda_k\,\ket{a_k}\otimes\ket{b_k},
+\]
+with orthonormal $\ket{a_k}$, orthonormal $\ket{b_k}$ and positive coefficients
+$\lambda_k$. The number of terms $r$ is the \emph{Schmidt rank}. If $r = 1$, the
+state is separable. If $r > 1$, it is entangled, and the more evenly spread the
+$\lambda_k$, the more entangled it is.
+
+Finding the decomposition is easy: arrange the four amplitudes of a two-qubit
+state as a $2\times2$ matrix and compute its singular values. That is the
+\emph{singular value decomposition}, found by Eugenio Beltrami in 1873 and Camille
+Jordan in 1874. Erhard Schmidt rediscovered it in 1907 for integral equations,
+which is why physicists use his name. For $\ket{01}$ and for
+$\ket{+}\otimes\ket{+}$, the singular values are $(1, 0)$: rank 1, separable. For
+the Bell state they are $(0.707, 0.707)$: rank 2, as entangled as two qubits can be.
+
+Entanglement, the resource with no classical analogue, turns out to be a question
+about the rank of a matrix, a tool from nineteenth-century linear algebra.
+
+\section{Identical particles: bosons and fermions}\label{sec:identical}
+
+The tensor product keeps its factors apart: there is a first qubit and a second
+qubit, and $\ket{01}$ is not $\ket{10}$. For two qubits on a chip that is right,
+because they sit in different places. For two electrons it is wrong. Every
+electron in the universe is identical to every other one. Nothing carries a label
+saying ``electron 1'', so swapping two electrons cannot change anything that can be
+measured.
+
+Write the swap as an operator, $P(\ket a \otimes \ket b) = \ket b \otimes \ket a$.
+For identical particles, $P\ket\psi$ must be the same physical state as $\ket\psi$,
+and Chapter~\ref{ch:hilbert} showed that two vectors describe the same state only if
+they differ by a global phase: $P\ket\psi = e^{i\theta}\ket\psi$. Swapping twice
+puts everything back, $P^2 = I$, so $e^{2i\theta} = 1$, and the phase can only be
+$+1$ or $-1$. Nature uses both.
+\[
+  \text{bosons: } \frac{\ket{ab} + \ket{ba}}{\sqrt2},
+  \qquad
+  \text{fermions: } \frac{\ket{ab} - \ket{ba}}{\sqrt2}.
+\]
+Now put both particles in the same state, $a = b$. The boson state becomes
+$\sqrt2\,\ket{aa}$, a perfectly good state once normalized. The fermion state
+becomes $\ket{aa} - \ket{aa} = 0$, which is not a state at all. Two fermions can
+never occupy the same state. That is the \emph{exclusion principle}, and here it
+fell out of one minus sign.
+
+\begin{history}{1924--1926 \textperiodcentered{} Dacca, Hamburg, Florence, Cambridge}
+In June 1924 Satyendra Nath Bose, a lecturer at the University of Dacca, sent
+Einstein a short paper that derived Planck's law by counting photons as truly
+indistinguishable. Einstein translated it into German, had it published, and
+extended it to atoms. In January 1925 Wolfgang Pauli, in Hamburg, explained the
+shells of electrons in atoms with a rule: no two electrons in the same state. In
+1926 Enrico Fermi, in Florence, and Paul Dirac, in Cambridge, worked out
+independently how particles obeying that rule fill up energy levels. Particles of
+the first kind became \emph{bosons}, after Bose, and of the second \emph{fermions},
+after Fermi. In 1940 Pauli proved which is which: particles with integer spin are
+bosons, particles with half-integer spin are fermions.
+\end{history}
+
+The sign matters well beyond atoms, and this book runs into it three times.
+
+\textbf{Matter.} Electrons are fermions, so they cannot all drop into the lowest
+level of an atom; they stack up in shells, and chemistry is the result. Photons are
+bosons, so they can pile into one state by the billion, and a laser is the result.
+
+\textbf{Superconductors.} Two electrons bound together, a \emph{Cooper pair}, behave
+as a boson: swapping two pairs swaps two fermions twice, and $(-1)^2 = +1$. Bosons
+can share one state, so below a critical temperature all the pairs of a metal fall
+into a single collective state. That is superconductivity, and it is what makes the
+qubits of Chapter~\ref{ch:hardware} work.
+
+\textbf{Computation.} The minus sign is where the cost of simulating electrons
+hides. A classical simulation of many electrons has to keep track of states that
+change sign every time two of them are swapped, and in a random sampling the
+positive and negative contributions cancel, leaving noise. That is the most famous
+form of the sign problem of Chapter~\ref{ch:history}, and the reason simulating
+molecules is one of the problems in Part~\ref{part:problems}.
+
+\subsection*{In two dimensions, any phase}
+
+The argument that left only $\pm1$ hid an assumption: that swapping twice is the
+same as doing nothing. Swapping twice means carrying one particle all the way around
+the other and back to where it started. In three dimensions, that loop can be lifted
+over the other particle and shrunk to a point, so it really is the same as staying
+put, and $P^2 = I$. In two dimensions, a loop around a particle cannot leave the
+plane. To shrink it, it would have to pass through the particle. Nothing then forces
+$P^2 = I$, and the phase of an exchange can be anything.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1mm, y=1mm]
+  % ---------- (a) three dimensions ----------
+  \begin{scope}
+    \node[font=\sffamily\small] at (20,33) {(a) three dimensions};
+    \fill[hfSource] (20,8) circle (1.6);
+    \node[font=\small, left=1.2mm] at (20,8) {$B$};
+    \draw[hfConcept, line width=1pt] (20,8) ellipse (14 and 4.5);
+    \fill[hfConcept] (34,8) circle (1.4);
+    \node[font=\small, right=1mm] at (34,8) {$A$};
+    \draw[hfConcept, -{Stealth[length=2mm]}, line width=0.8pt] (21,12.5) -- (19.5,12.5);
+    % lifted loop
+    \draw[hfConcept, dashed, line width=0.8pt] (20,20) ellipse (8 and 2.5);
+    \draw[hfConcept, dashed, line width=0.8pt] (20,27) ellipse (2.5 and 0.8);
+    \draw[black!40, -{Stealth[length=2mm]}, line width=0.8pt] (37,14) to[bend right=20] (29,24);
+    \node[hf/note, anchor=west] at (37,22) {lift the loop\\over $B$: it\\shrinks to\\nothing};
+    \node[hf/note] at (20,-5) {going around twice is the same as\\staying put, so $P^2 = I$ and the\\phase is $+1$ or $-1$};
+  \end{scope}
+  % ---------- (b) two dimensions ----------
+  \begin{scope}[xshift=78mm]
+    \node[font=\sffamily\small] at (20,33) {(b) two dimensions};
+    \fill[black!5] (-6,1) -- (40,1) -- (48,17) -- (2,17) -- cycle;
+    \draw[black!30, line width=0.6pt] (-6,1) -- (40,1) -- (48,17) -- (2,17) -- cycle;
+    \fill[hfSource] (21,9) circle (1.6);
+    \node[font=\small, left=1.2mm] at (21,9) {$B$};
+    \draw[hfConcept, line width=1pt] (21,9) ellipse (13 and 4.5);
+    \fill[hfConcept] (34,9) circle (1.4);
+    \node[font=\small, right=1mm] at (34,9) {$A$};
+    \draw[hfConcept, -{Stealth[length=2mm]}, line width=0.8pt] (22,13.5) -- (20.5,13.5);
+    \node[hf/note, text=hfAlert] at (21,24) {the loop cannot leave the plane:\\to shrink it, $A$ must cross $B$};
+    \node[hf/note] at (21,-5) {going around twice is not the same\\as staying put, and the phase of\\an exchange can be anything};
+  \end{scope}
+\end{tikzpicture}
+\caption{Why only two kinds of particle exist in three dimensions and more exist in
+two. Exchanging $A$ and $B$ twice is the same as carrying $A$ once around $B$. (a) In
+space, that loop can be lifted over $B$ and shrunk to a point, so a double exchange
+does nothing. (b) On a plane, the loop is trapped around $B$, and the double exchange
+can leave a phase behind. Particles that use that freedom are anyons.}\label{fig:exchange}
+\end{figure}
+
+\begin{history}{1977--1982 \textperiodcentered{} Oslo and Santa Barbara}
+Jon Magne Leinaas and Jan Myrheim, in Oslo, found the loophole in 1977 by looking at
+the space of all possible paths of identical particles: in one and two dimensions, an
+exchange can give any phase. In 1982 Frank Wilczek, at Santa Barbara, built a concrete
+example, a charged particle bound to a thin tube of magnetic flux, and named such
+particles \emph{anyons}, because the phase can be anything.
+\end{history}
+
+A two-dimensional world sounds like a mathematical game, but electrons confined in a
+thin layer of semiconductor, in a strong magnetic field, behave as one. Their collective
+excitations in the fractional quantum Hall effect, discovered in 1982, are anyons, and in
+2020 two groups, in Paris and at Purdue, measured their exchange phase directly.
+
+There is one more step, and it is the one topological quantum computing rests on. If
+several anyons share a set of states with the same energy, an exchange does not have to
+multiply the state by a number. It can apply a matrix, a unitary on that set of states,
+and then the order of the exchanges matters: exchanging $A$ with $B$ and then $B$ with
+$C$ is not the same as the other way around. Such particles are \emph{non-abelian}
+anyons, after the mathematician Niels Henrik Abel, whose name is attached to operations
+whose order does not matter. Braiding non-abelian anyons around each other is a quantum
+gate, and Section~\ref{sec:topological} is about the hardware that tries to build them.

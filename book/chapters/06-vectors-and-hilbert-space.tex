@@ -1,0 +1,224 @@
+\chapter{Vectors, Spaces and Hilbert Space}\label{ch:hilbert}
+
+\begin{etymology}
+\textbf{Algebra} comes from the Arabic \emph{al-jabr}, ``restoration''. It is a
+word from the title of al-Khwarizmi's treatise on equations, written in Baghdad
+around 820: \emph{al-jabr} was the operation of moving a subtracted term to the
+other side of an equation, restoring the balance.
+
+\textbf{Vector} is Latin for ``carrier'', from \emph{vehere}, ``to carry''.
+Something that carries you from one point to another.
+
+\textbf{Space} comes from \emph{spatium}, ``extent'', ``interval''. The room in
+which things can exist and move.
+
+\textbf{Phase} comes from the Greek \emph{phásis}, ``appearance''. How something
+shows itself at a given moment; the moon has phases. For anything that repeats,
+it means where in the cycle it is.
+\end{etymology}
+
+The state of a qubit is a vector. Before that sentence can mean anything, you need
+to know what a vector is, which turns out to be much more general than an arrow,
+and what extra structure a space of vectors needs to talk about probabilities.
+The answer is a Hilbert space, and getting there took about a thousand years of
+algebra.
+
+\section{From equations to structures}
+
+\begin{history}{around 820 \textperiodcentered{} Baghdad}
+Muhammad ibn Musa al-Khwarizmi wrote a treatise on solving equations of the
+second degree, without symbols, in words: ``a square and ten roots are equal to
+thirty-nine''. Today that is $x^2 + 10x = 39$. The answer was less important than
+the method. Al-Khwarizmi noticed that the same two operations, moving terms across
+(\emph{al-jabr}) and combining like terms (\emph{al-muqabala}), solve every
+equation of a given type, whatever the numbers are.
+\end{history}
+
+That is the seed of algebraic thinking: the structure of the manipulation
+matters more than the particular numbers. Symbols came slowly. François Viète,
+around 1591, was the first to use letters systematically for unknown quantities.
+René Descartes, in 1637, fixed the convention still used: letters from the end of
+the alphabet ($x, y, z$) for unknowns, from the start ($a, b, c$) for known
+quantities.
+
+\begin{history}{30 May 1832 \textperiodcentered{} Paris}
+Évariste Galois, 20 years old, spent the night before a duel writing a letter that
+summarized his work on why equations of degree five have no general solution by
+radicals. The answer, he had found, depends on the symmetries of the roots, not
+on the roots themselves. To describe those symmetries he used what we now call
+groups. He died of his wound the next day. His papers were published in 1846.
+\end{history}
+
+After Galois, algebra stopped being about finding numbers and became the study of
+structures: a set, some operations, and the rules they obey. Groups have one
+operation. Fields, like the rationals, the reals and the complex numbers, have
+addition and multiplication with all inverses; Richard Dedekind introduced them
+in 1871 and Heinrich Weber gave the abstract definition in 1893. And
+\emph{vector spaces} have addition plus multiplication by numbers taken from a
+field.
+
+\section{What a vector is}
+
+Vectors first appeared in physics, for quantities with size and direction: force,
+velocity. Hermann Grassmann, a schoolteacher in Stettin, built a general calculus
+of directed quantities in 1844; almost nobody read it. Josiah Willard Gibbs and
+Oliver Heaviside turned vectors into the everyday tool of physics in the 1880s.
+Giuseppe Peano, in 1888, gave the axiomatic definition, and with it the key
+step: what makes something a vector is not that it is an arrow, but the rules it
+obeys.
+
+\begin{concept}{Vector space}
+A set of objects (vectors) that can be added to each other and multiplied by
+numbers (scalars), where the result is always in the set and the usual rules
+hold: addition is commutative and associative, there is a zero vector, every
+vector has an opposite, and scaling distributes over addition.
+
+\textbf{What it fixes:} any theorem proved for vector spaces applies at once to
+arrows, lists of numbers, polynomials, functions and quantum states.
+
+\textbf{What it costs:} the intuition of arrows in the plane stops being reliable.
+You have to check the rules, not the picture.
+\end{concept}
+
+Arrows in the plane are vectors. So are lists of $n$ real numbers, polynomials of
+degree at most $n$, continuous functions, and lists of $n$ complex numbers, which
+form the space $\mathbb{C}^n$.
+
+The rule that is easiest to forget is \emph{closure}: adding two vectors, or
+scaling one, must give something inside the set. Points of the unit disk are not
+a vector space: $(0.8, 0) + (0.8, 0) = (1.6, 0)$ falls outside. The positive
+quadrant, where both coordinates are positive, is closed under addition (two
+positive numbers add to a positive number) but not under scaling: multiply
+$(1, 2)$ by $-1$ and you leave it. Without closure, none of the theorems of linear
+algebra apply.
+
+\section{Complex numbers}
+
+\begin{history}{1545--1572 \textperiodcentered{} Milan and Bologna}
+Girolamo Cardano published the solution of the cubic equation in the \emph{Ars
+Magna} of 1545. For some equations with three perfectly real solutions, the
+formula passes through square roots of negative numbers along the way. Cardano
+called these quantities ``as subtle as they are useless''. Rafael Bombelli, in his
+\emph{Algebra} of 1572, worked out rules to compute with them, and showed that
+they cancel out and leave the real answer. Complex numbers were not invented to
+solve $x^2 = -1$. They were forced on mathematicians by equations that had real
+solutions.
+\end{history}
+
+For two centuries, these ``imaginary'' numbers were used without being
+understood. Caspar Wessel in 1799, Jean-Robert Argand in 1806 and Carl Friedrich
+Gauss in 1831 gave them a geometric meaning: $z = a + ib$ is a point in the plane,
+with $a$ on the horizontal axis and $b$ on the vertical one. Leonhard Euler had
+already found, in 1748, the identity that makes the picture work:
+\[
+  e^{i\theta} = \cos\theta + i\sin\theta .
+\]
+So every complex number can be written as $z = re^{i\theta}$, with a size $r$ and
+an angle $\theta$, the \emph{phase}. Multiplying by $e^{i\theta}$ rotates by
+$\theta$; multiplying by $i$ rotates by 90 degrees. The algebra of complex numbers
+was built so that multiplying means rotating.
+
+In $\mathbb{R}^n$, scaling a vector can only stretch it or flip its sign. In
+$\mathbb{C}^n$, scaling can also rotate it. A real number has two directions,
+positive and negative; a complex number has a whole circle of them.
+
+Angles exist in $\mathbb{R}^2$ too, of course, but there they are something you
+compute between two vectors. In $\mathbb{C}$ the angle is part of the number
+itself, and it travels with every scalar you use.
+
+You can describe oscillations with real numbers only: $A\cos(\omega t + \theta)$
+has an amplitude, a frequency and a phase. But shifting a phase or adding two
+oscillations then needs trigonometric identities, and the bookkeeping grows fast.
+Written as $Ae^{i(\omega t + \theta)}$, an oscillation is a rotating point, and
+shifting its phase is one multiplication. Real numbers can do the job; complex
+numbers do it with the structure built in. Quantum amplitudes oscillate, and
+interference depends on their phases, which is why they are complex.
+
+\section{Hilbert space}
+
+\begin{history}{1904--1929 \textperiodcentered{} Göttingen and Berlin}
+Between 1904 and 1910, David Hilbert worked on integral equations, which appear
+all over physics. They could not be handled with finite lists of numbers: the
+unknowns were functions, which live in spaces of infinite dimension. Hilbert
+showed that length, angle and perpendicularity still make sense there, through
+infinite sequences whose squares add up to a finite number. In 1929 John von
+Neumann, who had worked with Hilbert in Göttingen, gave the abstract definition
+and the name: Hilbert space. He built quantum mechanics on it three years later.
+\end{history}
+
+A Hilbert space is a vector space over $\mathbb{C}$ with an \emph{inner product}
+$\braket{u|v}$, a way of combining two vectors into one number, that satisfies
+four conditions:
+
+\begin{enumerate}
+\item it is linear in the second argument;
+\item swapping the arguments gives the complex conjugate,
+$\braket{u|v} = \overline{\braket{v|u}}$;
+\item $\braket{v|v} \geq 0$, and it is zero only for the zero vector;
+\item the space is \emph{complete}: every Cauchy sequence converges to a point
+inside the space.
+\end{enumerate}
+
+A Cauchy sequence, named after Augustin-Louis Cauchy, is one whose terms get
+closer and closer to each other, like $1 + 1/n$. Completeness guarantees that
+the point they are approaching exists in the space. The rationals are not
+complete: a sequence of fractions can approach $\sqrt{2}$, which is not a fraction.
+In the finite spaces of quantum computing completeness is automatic, but it is
+what makes the infinite-dimensional spaces of physics usable.
+
+In $\mathbb{C}^n$ the inner product is
+$\braket{u|v} = \sum_i \overline{u_i}\,v_i$. The conjugation on the first vector is
+what makes $\braket{v|v} = \sum_i |v_i|^2$ real and non-negative. Without it, the
+``length'' of a complex vector could come out negative or complex.
+
+Everything geometric comes out of this one operation:
+
+\begin{center}
+\begin{tabular}{lll}
+\hline
+concept & from the inner product & meaning \\
+\hline
+norm & $\|v\| = \sqrt{\braket{v|v}}$ & the length of the vector \\
+orthogonality & $\braket{u|v} = 0$ & the vectors do not overlap \\
+projection & $\dfrac{\braket{u|v}}{\braket{u|u}}\,u$ & how much of $v$ lies along $u$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{The state vector}
+
+A quantum state is a vector $\ket{\psi}$ in a Hilbert space with norm 1:
+$\braket{\psi|\psi} = 1$. The system can be a particle's position, a photon's
+polarization, or a qubit. For one qubit,
+\[
+  \ket{\psi} = \alpha\ket{0} + \beta\ket{1}, \qquad |\alpha|^2 + |\beta|^2 = 1 .
+\]
+The state does not store physical values directly. It stores how the system will
+answer when you ask it something: each basis vector is a possible answer, and each
+coefficient says how much the state is aligned with it.
+
+Why a vector and not something else? Superposition is linear: if two states are
+possible, any normalized combination of them is too, and that is exactly what a
+vector space guarantees. Probabilities come from inner products,
+$P = |\braket{\phi|\psi}|^2$, and the norm makes them add to 1. And operations on
+states (gates, time evolution, measurements) are linear maps on the space.
+
+The state vector is not a probability distribution: the amplitudes are complex,
+and their phases, which do not show up in $|\alpha|^2$, decide interference. It is
+not the physical system either, only its description. And not all of its phase is
+physical.
+
+\begin{concept}{Global and relative phase}
+Multiplying the whole state by $e^{i\gamma}$ changes no probability, because
+$|e^{i\gamma}\braket{\phi|\psi}|^2 = |\braket{\phi|\psi}|^2$. The states
+$\ket{\psi}$ and $e^{i\gamma}\ket{\psi}$ are physically the same. But a phase
+between components, as in $\ket{0} + e^{i\varphi}\ket{1}$, changes how they
+interfere.
+
+\textbf{What it fixes:} it says which part of the description is physics and which
+is bookkeeping.
+
+\textbf{What it costs:} the relative phase is invisible to a direct measurement
+and decisive for the next operation. Quantum algorithms work by manipulating
+exactly that.
+\end{concept}

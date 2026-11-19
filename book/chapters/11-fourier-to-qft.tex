@@ -1,0 +1,185 @@
+\chapter{From Fourier to the Quantum Fourier Transform}\label{ch:fourier}
+
+\begin{etymology}
+\textbf{Period} comes from the Greek \emph{periodos}: \emph{peri-}, ``around'',
+and \emph{hodos}, ``way''. A way around, a circuit that comes back to where it
+started.
+
+\textbf{Frequency} comes from the Latin \emph{frequens}, ``crowded'',
+``repeated''. How often something comes back.
+\end{etymology}
+
+Shor's algorithm (Chapter~\ref{ch:encoding}) ends with a quantum Fourier transform
+that turns a hidden period into a measurable number. To see why that works, you
+have to see what the ordinary Fourier transform does. It was invented to study heat,
+and it turned out to be the natural tool for anything periodic.
+
+\section{The problem that started it}
+
+\begin{history}{1807--1822 \textperiodcentered{} Grenoble and Paris}
+Joseph Fourier, prefect of the Isère department under Napoleon, studied how heat
+spreads through a solid. The equation he wrote had simple solutions shaped like
+sines and cosines, but real temperature profiles are not sine-shaped. He claimed
+that any function can be written as a sum of sines and cosines, and submitted the
+memoir to the Institut de France in 1807. Lagrange objected: a sum of smooth
+oscillations, he argued, could not produce a function with corners. The claim was
+not fully rigorous, and Peter Gustav Lejeune Dirichlet only proved in 1829 under
+which conditions it holds. Fourier published his \emph{Théorie analytique de la
+chaleur} in 1822. The idea survived because it worked.
+\end{history}
+
+Decomposing a signal into frequencies separates its scales. Each frequency can be
+handled on its own and the results put back together, which is often much simpler
+than handling the whole signal at once. The central question becomes: how much of
+each frequency is in this signal?
+
+\section{Fourier series}
+
+A periodic function with period $T$ can be written as
+\[
+  f(t) = \sum_{k=-\infty}^{\infty} c_k\, e^{i 2\pi k t / T},
+  \qquad
+  c_k = \frac{1}{T}\int_0^T f(t)\, e^{-i 2\pi k t/T}\, dt .
+\]
+Each $c_k$ is how much of the frequency $k/T$ is present in $f$. The exponentials
+are used instead of separate sines and cosines because each one packs both into a
+single rotation (Chapter~\ref{ch:hilbert}).
+
+This is linear algebra in disguise. Functions form a vector space with the inner
+product $\braket{f|g} = \int_0^T \overline{f(t)}\, g(t)\, dt$, and in that space the
+exponentials $e^{i2\pi kt/T}$ are orthonormal: the inner product of two different
+ones is zero. They are a basis, and the $c_k$ are the coordinates of $f$ in it.
+Computing $c_k$ is projecting $f$ onto one pure oscillation.
+
+\section{The discrete Fourier transform}
+
+A computer has no continuous functions, only $N$ samples $x_0, \dots, x_{N-1}$. The
+\emph{discrete Fourier transform} (DFT) maps them to $N$ complex coefficients:
+\[
+  X_k = \sum_{j=0}^{N-1} x_j\, \omega_N^{-jk}, \qquad \omega_N = e^{i 2\pi / N},
+\]
+and the inverse brings them back,
+$x_j = \frac1N\sum_k X_k\,\omega_N^{jk}$. $X_k$ measures how much the sequence
+correlates with the oscillation of frequency $k/N$.
+
+For $N = 4$ and the sequence $[1, 0, 1, 0]$, the transform is $[2, 0, 2, 0]$. The
+sequence repeats every 2 samples, and the spectrum has weight only at $k = 0$ and
+$k = 2$.
+
+\section{The DFT is a unitary matrix}
+
+The DFT is linear, so it is a matrix. With the normalization chosen to make it
+symmetric,
+\[
+  (F_N)_{kj} = \frac{1}{\sqrt N}\, \omega_N^{jk},
+\]
+and $F_N$ is unitary: $F_N^\dagger F_N = I$. It is a change of basis that preserves
+length, from the standard basis to the \emph{Fourier basis}, whose vectors are pure
+frequencies.
+
+For $N = 2$,
+\[
+  F_2 = \frac{1}{\sqrt2}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix} = H .
+\]
+The Hadamard gate is the Fourier transform of one qubit. The first gate in almost
+every quantum circuit is already a Fourier transform. That is why $H\ket0$ is an
+even superposition: the state $\ket0$ is a single spike, and the transform of a
+spike is flat.
+
+\begin{history}{1965 \textperiodcentered{} IBM and Princeton}
+Multiplying by $F_N$ directly costs $O(N^2)$ operations. In 1965 James Cooley and
+John Tukey published an algorithm that exploits the recursive structure of $F_N$ to
+do it in $O(N\log N)$: the fast Fourier transform. Richard Garwin had pushed for it
+because detecting Soviet nuclear tests from seismometer data needed fast spectral
+analysis. Gauss had found essentially the same method around 1805, in an unpublished
+notebook on asteroid orbits.
+\end{history}
+
+\section{The DFT finds periods}
+
+This is the property that matters for the rest of the book. If a sequence of length
+$N$ has period $r$, and $r$ divides $N$, its transform is zero everywhere except at
+multiples of $N/r$. The $N/r$ copies of the period add up in phase at those
+frequencies and cancel exactly at all the others. It is interference, the same
+mechanism as in Chapter~\ref{ch:qubit}.
+
+Take $N = 8$ and a spike every 4 samples:
+\[
+  [1, 0, 0, 0, 1, 0, 0, 0] \;\xrightarrow{\ \text{DFT}\ }\; [2, 0, 2, 0, 2, 0, 2, 0].
+\]
+The peaks are at $0, 2, 4, 6$, the multiples of $8/4 = 2$. The
+spectrum of a periodic signal is sparse, and the spacing of its peaks reveals the
+period.
+
+Apply this to $f(a) = 2^a \bmod 15$, which has period 4 (Chapter~\ref{ch:factoring}), and the
+transform of its first eight values has peaks at $k = 2, 4, 6$ (the constant part
+sits at $k = 0$). Spacing 2, so $r = 8/2 = 4$.
+
+\section{The quantum Fourier transform}
+
+The quantum Fourier transform (QFT) is the same matrix $F_N$, with $N = 2^n$, built as
+a circuit on $n$ qubits:
+\[
+  \mathrm{QFT}\,\ket{j} = \frac{1}{\sqrt N}\sum_{k=0}^{N-1} \omega_N^{jk}\,\ket{k}.
+\]
+Applied to a superposition $\sum_j x_j\ket j$, it produces $\sum_k X_k\ket k$: the DFT
+of the amplitudes.
+
+\begin{history}{1994 \textperiodcentered{} IBM}
+Shor's first construction needed a Fourier transform over a large range of values,
+and Don Coppersmith, at IBM, showed in 1994 how to build it from Hadamards and
+small controlled phase rotations. Coppersmith's report was titled ``An approximate
+Fourier transform useful in quantum factoring''. He also showed that the tiniest
+rotations can be dropped with little loss of accuracy.
+\end{history}
+
+The circuit uses $O(n^2)$ gates: one Hadamard per qubit, controlled rotations
+$R_k = \mathrm{diag}(1, e^{i2\pi/2^k})$ between pairs, and swaps at the end to
+reverse the order of the qubits. For three qubits, that is three Hadamards, three
+controlled rotations and one swap, and multiplying their matrices together gives
+exactly $F_8$.
+
+Compare the costs. The classical FFT on $N = 2^n$ numbers takes $O(N\log N) = O(2^n n)$
+operations. The QFT takes $O(n^2)$ gates. That looks like an exponential speedup, and
+in a narrow sense it is.
+
+\begin{concept}{Quantum Fourier transform}
+The discrete Fourier transform applied to the $2^n$ amplitudes of an $n$-qubit
+state, with a circuit of $O(n^2)$ gates.
+
+\textbf{What it fixes:} it makes periodicity hidden in an exponentially large
+superposition visible to a measurement.
+
+\textbf{What it costs:} you cannot read the spectrum. Measuring returns a single
+$k$, with probability $|X_k|^2$. The QFT is not a faster FFT.
+\end{concept}
+
+\section{What you can and cannot read}
+
+After the QFT the state is $\sum_k X_k\ket k$, and a measurement gives one $k$. If
+the spectrum is flat, that $k$ says nothing. If the spectrum has a few sharp peaks,
+almost every measurement lands on one of them, and a few runs are enough to infer
+the spacing. The QFT is useful exactly when the spectrum is sparse: periodic
+functions, or phases of eigenvalues.
+
+This is why every claim of the form ``the QFT gives an exponential speedup for
+signal processing'' should be read with suspicion. Loading a classical signal into
+the amplitudes costs about as much as the classical FFT, and the output cannot be
+read. The QFT pays off only when the periodic state is produced inside the
+computer, as in Shor's algorithm, and only a small piece of information (a period,
+a phase) needs to come out.
+
+\section{Two uses}
+
+\textbf{Shor.} The state $\sum_a \ket a\ket{x^a \bmod N}$ is periodic in $a$, with
+period $r$. A QFT on the first register puts the probability on multiples of $q/r$,
+and a measurement plus continued fractions gives $r$ (Chapter~\ref{ch:encoding}).
+
+\textbf{Phase estimation.} A unitary $U$ with eigenvector $\ket{u}$ and eigenvalue
+$e^{i2\pi\phi}$ can be used to write the phase $\phi$ into a control register, as
+$\frac{1}{\sqrt N}\sum_k e^{i2\pi k\phi}\ket k$: a pure oscillation with frequency
+$\phi$. The inverse QFT concentrates it on the integer closest to $N\phi$. Alexei
+Kitaev introduced phase estimation in 1995, and in 1998 Cleve, Ekert, Macchiavello
+and Mosca showed that Shor's algorithm is a special case of it. Phase estimation is
+how a quantum computer reads eigenvalues, including the energies of a Hamiltonian,
+which brings the story back to Feynman's original question.

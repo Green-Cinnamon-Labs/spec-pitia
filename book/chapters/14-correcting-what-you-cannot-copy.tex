@@ -1,0 +1,136 @@
+\chapter{Correcting What You Cannot Copy}\label{ch:qec}
+
+\begin{etymology}
+\textbf{Error} comes from the Latin \emph{errare}, ``to wander'', ``to stray''.
+An error is a state that has wandered away from where it should be.
+
+\textbf{Redundancy} comes from \emph{redundare}, ``to overflow'': \emph{re-},
+``again'', and \emph{undare}, ``to surge like a wave''. More than is needed, kept
+on purpose.
+\end{etymology}
+
+By the middle of 1994 quantum computing had an algorithm worth building a machine
+for. Within weeks it also had an objection that seemed to make the machine
+impossible. This chapter is about the objection and the answer, because the answer
+is what turned the question ``can a quantum computer work?'' into the question this
+book asks: ``how many qubits will it take?''.
+
+\section{The objection}
+
+\begin{history}{May 1994 \textperiodcentered{} Santa Fe Institute}
+At a workshop at the Santa Fe Institute, a few weeks after Shor's result began to
+circulate, Rolf Landauer of IBM argued that quantum computers could not correct
+errors. Landauer was the physicist who had shown in 1961 that erasing information
+costs energy, and he had spent decades studying what physics allows computers to
+do. William Unruh published a similar warning about decoherence the next year.
+\end{history}
+
+Classical computers fight errors in three ways, and Shor himself later went through
+them to show why the objection was so strong.
+
+\begin{itemize}
+\item \textbf{Checkpoints.} Save the state of the computation now and then; if an
+error happens, go back to the last save. Saving the state is copying it.
+\item \textbf{Error-correcting codes.} Add redundant parity bits that let you detect
+and fix a flipped bit. The redundancy is, in effect, partial copies.
+\item \textbf{Massive redundancy.} Run many copies, compare them, and take the
+majority. If one of five copies fails, you rebuild the fifth from the other four.
+That is copying too.
+\end{itemize}
+
+The no-cloning theorem (Chapter~\ref{ch:quantum}) forbids copying an unknown
+quantum state. There is a second problem: classical errors are discrete (a bit
+flips or it does not), while a qubit can drift by any small angle. And a third:
+checking a qubit means measuring it, and measuring destroys the superposition.
+
+Without error correction, every gate must be perfect. Factoring a number of
+cryptographic size takes on the order of a billion steps, so each one would need an
+error below one in a billion. Shor recalled that the best estimate at the time, by
+Jeff Kimble, was that experimenters could do one or two quantum gates with about
+80\% accuracy.
+
+\section{Encoding without copying}
+
+The simplest classical code repeats each bit three times: $0 \to 000$,
+$1 \to 111$. If one bit flips, the majority still gives the right answer. Asher
+Peres had already noted in 1985 that the same thing can be written for qubits:
+\[
+  \alpha\ket0 + \beta\ket1 \;\longrightarrow\; \alpha\ket{000} + \beta\ket{111}.
+\]
+This is not cloning. Cloning would produce
+$(\alpha\ket0 + \beta\ket1)^{\otimes3}$, three independent copies of the
+superposition. The encoded state is one entangled superposition spread over three
+qubits.
+
+The trick that gets around measurement is to ask only about parities. ``Are qubits 1
+and 2 equal? Are qubits 2 and 3 equal?'' Those questions can be answered with extra
+qubits without learning anything about $\alpha$ or $\beta$. The answers, called the
+\emph{syndrome}, say which qubit flipped, if any, and a gate flips it back. The
+superposition is never measured.
+
+And the problem of continuous errors dissolves on its own. A small drift is a
+superposition of ``no error'' and ``a flip''. Measuring the syndrome forces it to
+choose: either nothing happened, or a full flip happened, which can then be fixed.
+Measurement, the enemy of superposition, turns analog errors into digital ones.
+
+\section{Shor's nine qubits}
+
+The three-qubit code fixes bit flips, but it does nothing for phase errors, the
+error that turns $\ket0 + \ket1$ into $\ket0 - \ket1$. Worse, a phase error on any of
+the three qubits becomes a phase error on the encoded qubit, so the code makes phase
+errors three times more likely.
+
+\begin{history}{1995 \textperiodcentered{} Bell Labs}
+Shor noticed that a phase error is a bit flip seen in another basis: apply a
+Hadamard and $Z$ becomes $X$ (Chapter~\ref{ch:state}). So he protected against phase
+errors with a three-qubit code in the Hadamard basis, and protected each of those
+three qubits against bit flips with another three-qubit code. Three times three: one
+logical qubit in nine physical ones, protected against any error on a single qubit.
+The paper appeared in 1995. In 1996, Robert Calderbank and Shor, and independently
+Andrew Steane at Oxford, showed how to turn pairs of classical codes into quantum
+ones. Steane's code uses seven qubits. The family is called CSS, after the three of
+them.
+\end{history}
+
+\begin{concept}{Logical qubit}
+A qubit stored in a collective state of many physical qubits, so that errors on a
+few of them can be detected and corrected without measuring the information itself.
+
+\textbf{What it fixes:} the computation no longer needs perfect hardware, only
+hardware that is good enough.
+
+\textbf{What it costs:} many physical qubits per logical qubit, constant syndrome
+measurements, and fast classical processing to decode them, for the whole duration
+of the computation.
+\end{concept}
+
+\section{From possible to engineering}
+
+A code that fixes one error is not enough. The extra qubits and gates of the code
+can fail too, and if the code introduces more errors than it removes, it makes
+things worse.
+
+\begin{history}{1996--1997 \textperiodcentered{} the threshold theorem}
+Several groups proved, independently, the result that settled the question: Dorit
+Aharonov and Michael Ben-Or; Emanuel Knill, Raymond Laflamme and Wojciech Zurek;
+Alexei Kitaev; and building on Shor's own 1996 work on fault-tolerant gates. If the
+error rate of every physical operation is below a certain \emph{threshold}, codes
+can be nested or enlarged so that the logical error rate falls as low as you want,
+with an overhead that grows only polylogarithmically with the length of the
+computation.
+\end{history}
+
+The threshold theorem is the reason quantum computing is an engineering problem and
+not a dead end. It does not say the engineering is easy. It says how to measure the
+distance: get the physical error rate below the threshold, then pay in qubits for
+every factor of ten in reliability.
+
+In 1997 Kitaev proposed codes laid out on a lattice, first on a torus and then, with
+Sergey Bravyi in 1998, on a flat surface. Every check involves only neighboring
+qubits, which suits chips where qubits can only talk to their neighbors.
+These \emph{surface codes} have a threshold of about one percent, high by the
+standards of the field, and became the default plan for superconducting hardware.
+Their price is overhead: hundreds to thousands of physical qubits per logical qubit,
+depending on how good the physical qubits are. That overhead is why the estimate for
+breaking RSA-2048 in Chapter~\ref{ch:factoring} is counted in millions of physical qubits rather than
+the few thousand logical qubits the algorithm needs.

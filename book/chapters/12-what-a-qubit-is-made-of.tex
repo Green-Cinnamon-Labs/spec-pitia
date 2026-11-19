@@ -1,0 +1,767 @@
+\chapter{What a Qubit Is Made Of}\label{ch:hardware}
+
+\begin{etymology}
+\textbf{System} comes from the Greek \emph{sýstēma}: \emph{syn-}, ``together'',
+and \emph{histanai}, ``to set up''. Parts set up together as a whole, which we
+choose to separate from the rest of the world in order to study it.
+
+\textbf{Coherence} comes from \emph{cohaerere}: \emph{co-}, ``together'', and
+\emph{haerere}, ``to stick''. In quantum physics it means that the phase
+relations between amplitudes are kept, which is what allows interference.
+\emph{Decoherence} is the loss of those relations, when the system gets entangled
+with its surroundings and the phases leak out.
+\end{etymology}
+
+A qubit is any physical system with two levels that obeys quantum mechanics: the
+spin of an electron (up or down), the polarization of a photon (horizontal or
+vertical), two energy levels of an atom. Mathematically all of them are the same
+vector in $\mathbb{C}^2$. Physically they could hardly be more different, and the
+differences decide everything about how far a technology can go.
+
+The hard part is not finding a two-level system. Nature is full of them. The hard
+part is finding one that you can prepare, control and read, and that still keeps
+its phases long enough to compute. Those demands pull against each other. A qubit
+well isolated from the world keeps its coherence, but it is also hard to reach
+with the controls. A qubit easy to control is, for the same reason, easy for the
+environment to disturb.
+
+This chapter is a tour of the technologies, and a checklist guides it. Every
+platform is walked through the same list, item by item, so that by the end each
+item means something concrete.
+
+\section{The checklist}
+
+\begin{history}{2000 \textperiodcentered{} IBM}
+David DiVincenzo, at IBM, listed what a physical system needs to be a quantum
+computer. He had written, with Daniel Loss, one of the first concrete proposals for
+qubits in 1998. His list became the checklist every technology is measured against.
+\end{history}
+
+\begin{enumerate}
+\item \textbf{Characterized and scalable.} You know exactly what your qubit is, and
+adding more of them does not make the others worse.
+\item \textbf{Initialization.} You can put every qubit in a known starting state,
+$\ket{00\dots0}$.
+\item \textbf{Coherence.} The qubit keeps its quantum state much longer than a gate
+takes.
+\item \textbf{Universal gates.} A small menu of operations is enough to build any
+computation.
+\item \textbf{Measurement.} You can read each qubit, reliably.
+\end{enumerate}
+
+He added two more for quantum communication: (6) converting between qubits that
+stay put and qubits that travel, which in practice are photons, and (7) sending the
+traveling ones faithfully from one place to another.
+
+In 2018, John Preskill gave a name to the machines that exist today: \emph{NISQ},
+noisy intermediate-scale quantum. Tens to a few thousand qubits, too noisy for error
+correction at scale, too large to simulate exactly. No technology yet meets the five
+criteria at the fidelity and scale that Shor's algorithm needs on a cryptographic
+number. The tour shows where each one falls short.
+
+\section{Superconducting circuits}
+
+\begin{history}{1962--1985 \textperiodcentered{} Cambridge and Berkeley}
+In 1962 Brian Josephson, a 22-year-old PhD student at Cambridge, predicted that a
+current can flow without resistance through a thin insulating barrier between two
+superconductors. The \emph{Josephson junction} earned him a share of the 1973
+Nobel Prize. In 1984 and 1985, at Berkeley, John Clarke, Michel Devoret and John
+Martinis showed that an electrical circuit built around such a junction, big enough
+to see under a microscope, behaves as a single quantum object: it tunnels through
+energy barriers and has discrete energy levels that they could probe with
+microwaves. A circuit with billions of electrons had a quantized spectrum. They
+received the Nobel Prize in Physics for it in 2025.
+\end{history}
+
+\subsection{What the qubit is}
+
+Start with the simplest circuit there is: a capacitor and an inductor in a loop. Charge
+sloshes from the capacitor through the inductor and back, and the current oscillates
+at a fixed frequency. It is the mass on a spring of Chapter~\ref{ch:classical}, with
+charge in place of position and current in place of velocity. Cool it until the metal
+superconducts, so nothing is lost to resistance, and it becomes a quantum harmonic
+oscillator: its energy can only take values on a ladder of equally spaced rungs.
+
+\begin{reflection}{The energy of a whole circuit comes in steps?}
+That sentence should bother you. Quantization was discovered in atoms. A circuit is a
+piece of metal you can see under a microscope, made of billions of electrons, and we
+are saying its energy cannot change smoothly.
+
+First, which energy. Not the energy of each electron, and not heat. It is the energy
+of the oscillation itself, the one that sloshes back and forth. At one instant it sits
+in the electric field of the charged capacitor, $Q^2/2C$; a quarter of a period later
+it sits in the magnetic field of the current through the inductor, $\Phi^2/2L$, where
+$\Phi$ is the magnetic flux. Their sum is the Hamiltonian of the circuit,
+\[
+  H = \frac{Q^2}{2C} + \frac{\Phi^2}{2L},
+\]
+the same shape as the spring's $p^2/2m + kx^2/2$ in Chapter~\ref{ch:classical}: charge
+plays the role of momentum, flux the role of position, and $1/C$ and $1/L$ the roles of
+$1/m$ and $k$. So far this is classical physics. Three steps turn it into quantum
+physics, and each one was built earlier in the book.
+
+\textbf{Dirac's rule} (end of Chapter~\ref{ch:classical}). Replace each classical
+quantity with an operator, and the Poisson bracket with a commutator. For the circuit,
+$\{\Phi, Q\} = 1$ becomes
+\[
+  [\hat\Phi, \hat Q] = \hat\Phi\hat Q - \hat Q\hat\Phi = i\hbar .
+\]
+Charge and flux stop being numbers. They become operations on the state of the
+circuit, and the order in which you apply them matters.
+
+\textbf{Uncertainty} (Chapter~\ref{ch:quantum}). Two operators that do not commute
+have no eigenvectors in common, so no state of the circuit has a definite charge and a
+definite flux at the same time. Robertson's inequality gives
+$\Delta\Phi\,\Delta Q \geq \hbar/2$. The circuit can never be perfectly at rest, with
+no charge and no current at once.
+
+\textbf{Energies are eigenvalues} (Chapter~\ref{ch:quantum}, third postulate). The
+energy is now the operator $\hat H$, and a measurement of it can only return one of
+its eigenvalues. For the particle in a box they came out discrete because only waves
+that fit between the walls are allowed. The circuit is a box with soft walls: the
+energy $\Phi^2/2L$ grows on both sides, so the wave describing the state has to die
+out on both sides, and only some shapes manage it. Solving for those shapes gives a
+ladder of energies, equally spaced, $\hbar\omega$ apart, with
+$\omega = 1/\sqrt{LC}$.
+
+If one of these steps lost you, the problem is not in this box. You skipped
+Chapter~\ref{ch:quantum}, or the end of Chapter~\ref{ch:classical}, where each step is
+built from its history. Go back; this box only applies them to a circuit.
+
+So what is a rung of the ladder? Not a place, and not a part of the circuit. Each rung
+is one value that the total energy of the oscillation is allowed to have:
+\[
+  E_n = \hbar\omega\left(n + \tfrac12\right), \qquad n = 0, 1, 2, \dots
+\]
+The number $n$ counts how many quanta of oscillation the circuit is holding, and each
+quantum carries exactly the energy of one microwave photon of frequency $\omega/2\pi$.
+Climbing one rung means absorbing one such photon; dropping one means emitting it. There
+is nothing in between: the circuit cannot hold half a quantum. Even the bottom rung is not
+zero. The circuit keeps $\tfrac12\hbar\omega$ there, the \emph{zero-point energy}, because
+charge and flux cannot both be exactly zero at once; that would violate the uncertainty
+principle of Chapter~\ref{ch:quantum}.
+
+Second, why nobody sees the steps in ordinary electronics. They are there, but tiny.
+At 5~GHz one step is $3.3\times10^{-24}$~J. A capacitor of 1~pF charged to 1~V stores
+$5\times10^{-13}$~J, which is 150 billion steps: a ramp made of grains of sand looks
+smooth. At room temperature, thermal agitation is 1250 times larger than one step, so
+the state is smeared over a wide band of rungs and no single one can be picked out. And
+resistance drains the oscillation before any step could be noticed.
+
+\begin{center}
+\begin{tikzpicture}[x=1mm, y=1mm]
+  % ---------- ordinary circuit, warm ----------
+  \begin{scope}
+    \foreach \i in {0,...,64} \draw[black!35, line width=0.25pt] (0,\i*0.5) -- (22,\i*0.5);
+    \shade[top color=hfAlert!0, bottom color=hfAlert!0, middle color=hfAlert!55, opacity=0.75]
+      (-0.5,9) rectangle (22.5,27);
+    \draw[black!60, decorate, decoration={brace, amplitude=3pt}] (23.5,27) -- (23.5,9)
+      node[midway, right=3pt, hf/note, align=left] {thermal\\spread:\\$\sim$1250\\rungs};
+    \node[font=\sffamily\small, above, align=center] at (11,33.5) {ordinary circuit, 300~K};
+    \node[hf/note, below, align=center] at (11,-1.5) {rungs too close to tell apart;\\the state is smeared\\(not to scale)};
+  \end{scope}
+  % arrow
+  \draw[black!40, -{Stealth[length=2.4mm]}, line width=0.8pt] (44,16) -- (70,16)
+    node[midway, above, hf/note, align=center] {superconducting,\\cooled to 15~mK};
+  % ---------- same circuit, cold ----------
+  \begin{scope}[xshift=92mm]
+    \foreach \n/\e in {0/{\tfrac12}, 1/{\tfrac32}, 2/{\tfrac52}, 3/{\tfrac72}} {
+      \draw[black!70, line width=1pt] (0,\n*9) -- (20,\n*9);
+      \node[font=\small, left] at (0,\n*9) {$n = \n$};
+      \node[font=\small, right] at (20,\n*9) {$\e\,\hbar\omega$};
+    }
+    \fill[hfConcept] (10,1.6) circle (1.6);
+    \draw[hfConcept, -{Stealth[length=1.8mm]}, line width=0.8pt] (15,0.6) -- (15,8.4);
+    \node[hf/note, text=hfConcept, anchor=west] at (15.5,4.5) {one photon};
+    \node[font=\sffamily\small, above, align=center] at (10,33.5) {same circuit, cold};
+    \node[hf/note, below, align=center] at (10,-1.5) {each rung is one allowed energy;\\the circuit sits on the bottom one};
+  \end{scope}
+\end{tikzpicture}
+\end{center}
+
+The transmon removes all three disguises. It is cooled far below the size of one step,
+it is superconducting so nothing drains away, and it holds zero or one quantum, not
+billions. What remains is the bare ladder.
+
+The last reason it works is superconductivity itself. Below the critical temperature,
+the electrons pair up and all the pairs share a single quantum state. Billions of
+particles move as one, so the whole circuit has a single degree of freedom, and that
+single degree of freedom behaves like one particle on a spring. In 1980 Anthony Leggett
+asked whether quantum mechanics would still hold for a variable like that, describing a
+macroscopic object. The experiments of Clarke, Devoret and Martinis in 1985 were the
+answer: it does.
+\end{reflection}
+
+That ladder is useless as a qubit. A microwave pulse tuned to the jump from the bottom
+rung to the next has exactly the frequency of every other jump too, so it pushes the
+circuit up the ladder and out of any pair of levels you wanted to use.
+
+Now replace the inductor with a Josephson junction. The junction behaves like an
+inductor whose value depends on the current through it, a \emph{nonlinear} one. It
+bends the oscillator so that the rungs get closer together as you climb. The first jump
+and the second now have different frequencies, and a pulse tuned to the first leaves
+the second alone.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1mm, y=1mm]
+  % ---------- (a) LC oscillator ----------
+  \begin{scope}
+    \draw[line width=0.8pt] (0,4) -- (0,0) -- (16,0) -- (16,3);
+    \draw[line width=0.8pt] (0,6) -- (0,10) -- (16,10) -- (16,7);
+    \draw[line width=1.2pt] (-3,4) -- (3,4) (-3,6) -- (3,6);
+    \draw[line width=0.8pt, decorate, decoration={coil, aspect=0.6, segment length=1.6mm, amplitude=1.6mm}] (16,7) -- (16,3);
+    \node[hf/note, left] at (-3,5) {$C$};
+    \node[hf/note, right] at (18,5) {$L$};
+    \node[font=\sffamily\small, above] at (8,11) {(a) LC oscillator};
+    % ladder
+    \foreach \lvl/\name in {0/0, 9/1, 18/2, 27/3} {
+      \draw[black!70, line width=1pt] (0,-40+\lvl) -- (16,-40+\lvl);
+      \node[font=\small, left] at (0,-40+\lvl) {$\ket{\name}$};
+    }
+    \foreach \a/\b in {0/9, 9/18, 18/27}
+      \draw[hfConcept, -{Stealth[length=1.8mm]}, line width=0.8pt] (8,-40+\a+0.6) -- (8,-40+\b-0.6);
+    \node[hf/note, below, align=center] at (8,-42) {every jump the same:\\a pulse climbs the whole ladder};
+  \end{scope}
+  % arrow between panels
+  \draw[black!40, -{Stealth[length=2.4mm]}, line width=0.8pt] (27,5) -- (51,5)
+    node[midway, above, hf/note] {swap $L$ for a junction};
+  % ---------- (b) transmon ----------
+  \begin{scope}[xshift=70mm]
+    \draw[line width=0.8pt] (0,4) -- (0,0) -- (16,0) -- (16,10) -- (0,10) -- (0,6);
+    \draw[line width=1.4pt] (-5,4) -- (5,4) (-5,6) -- (5,6);
+    \draw[hfAlert, line width=1.2pt] (13.5,3.5) -- (18.5,6.5) (13.5,6.5) -- (18.5,3.5);
+    \node[hf/note, left] at (-5,5) {large $C$};
+    \node[hf/note, right, text=hfAlert] at (19,5) {junction};
+    \node[font=\sffamily\small, above] at (8,11) {(b) transmon};
+    % ladder
+    \fill[hfConcept!10] (-1,-41.5) rectangle (17,-30);
+    \foreach \lvl/\name in {0/0, 9/1, 16.5/2, 22.5/3} {
+      \draw[black!70, line width=1pt] (0,-40+\lvl) -- (16,-40+\lvl);
+      \node[font=\small, left] at (0,-40+\lvl) {$\ket{\name}$};
+    }
+    \draw[hfConcept, -{Stealth[length=1.8mm]}, line width=1pt] (8,-39.4) -- (8,-31.6);
+    \draw[hfAlert, -{Stealth[length=1.8mm]}, line width=0.8pt, dashed] (8,-30.4) -- (8,-24.1);
+    \draw[black!30, -{Stealth[length=1.8mm]}, line width=0.8pt] (8,-22.9) -- (8,-18.1);
+    \draw[hfConcept, line width=0.8pt, decorate, decoration={brace, amplitude=4pt, mirror}]
+      (18.5,-40) -- (18.5,-31);
+    \node[hf/note, anchor=west, text=hfConcept, align=left] at (22,-35.5) {\textbf{the qubit}\\$\approx 5$ GHz};
+    \node[hf/note, anchor=west, text=hfAlert, align=left] at (22,-27) {$\ket1\to\ket2$ is 200--300 MHz\\lower: the pulse misses it};
+    \node[hf/note, below, align=center] at (8,-42) {each jump a bit smaller};
+  \end{scope}
+\end{tikzpicture}
+\caption{What a superconducting qubit is. (a) A capacitor and an inductor make an
+oscillator whose energy levels are equally spaced. (b) Replace the inductor with a
+Josephson junction and the levels become uneven. The qubit is the two lowest levels of
+this circuit.}\label{fig:ladder}
+\end{figure}
+
+So the qubit is not a particle or a little object on the chip. It is the two lowest
+energy states of a whole electrical circuit, a few hundred micrometers across, with
+billions of paired electrons moving as one. $\ket0$ is the circuit at rest in its
+ground state. $\ket1$ is the circuit holding one quantum of oscillation, an energy of
+about 20 micro-electronvolts, which is what a single microwave photon at 5~GHz
+carries. A superposition $\alpha\ket0 + \beta\ket1$ is the circuit in both at once.
+
+The first circuits of this kind came in quick succession. In 1999, at NEC in Tsukuba,
+Yasunobu Nakamura, Yuri Pashkin and Jaw-Shen Tsai showed coherent oscillations in a
+``Cooper-pair box'', a tiny island of superconductor; they lasted a few nanoseconds.
+The same year Hans Mooij's group in Delft proposed the flux qubit, a loop with current
+flowing both ways at once, seen in experiments in 2000. In 2002, at Saclay, Denis Vion,
+Daniel Esteve, Michel Devoret and colleagues built the \emph{quantronium}, and at NIST
+in Boulder, Martinis's group demonstrated the phase qubit. In 2007, at Yale, Jens Koch,
+Robert Schoelkopf, Steven Girvin and colleagues proposed the \emph{transmon}: a
+Cooper-pair box with a large capacitor added, which makes it nearly immune to stray
+charges at the price of a smaller nonlinearity. The transmon became the dominant
+design, used by IBM and Google among others. Now the checklist.
+
+\subsection*{1. Characterized and scalable}
+
+\emph{Characterized} means you know the Hamiltonian of your qubit: the energies of its
+levels, how it couples to its neighbors, and what else is nearby. For a transmon that is
+the ladder of Figure~\ref{fig:ladder}. The qubit frequency is typically around 5~GHz,
+the next jump is 200 to 300~MHz lower, and the third rung is always there, waiting for
+a pulse that is too strong or too short. A transmon that ends up in $\ket2$ has left the
+computation, an error called \emph{leakage}.
+
+Transmons are made, not found, and no two come out of fabrication identical. Each one
+has its own frequency and must be measured and calibrated on its own, and the
+calibration drifts. Characterization is not done once; it is a daily job.
+
+\emph{Scalable} means adding qubits does not make the rest worse. The transmon's best
+argument is here: chips are made with the lithography of ordinary electronics, so
+drawing a thousand qubits costs little more than drawing ten. Its worst problem is also
+here. Every qubit needs its own control lines, running from room temperature down into
+the refrigerator, and each wire brings heat and noise with it. Hundreds of qubits fit;
+a million wires do not.
+
+\subsection*{2. Initialization}
+
+Before a computation, every qubit has to be in $\ket0$. Nature does that for free if
+the qubit is cold enough, because a system in equilibrium sits in its lowest level
+except for thermal kicks. The kicks are small when the temperature is small compared
+with the energy of the jump. For a 5~GHz transmon, that energy corresponds to a
+temperature of 0.24~K. Boltzmann's law gives the chance of finding the qubit in $\ket1$:
+
+\begin{center}
+\begin{tabular}{lr}
+\hline
+temperature & qubit found in $\ket1$ \\
+\hline
+room temperature, 300~K & 49.98\% \\
+liquid helium, 4~K & 48.5\% \\
+50~mK & 0.8\% \\
+15~mK & 0.00001\% \\
+\hline
+\end{tabular}
+\end{center}
+
+At room temperature the qubit is a coin toss. At 4~K, the temperature of liquid helium,
+it is still a coin toss. Only well below 0.24~K does it settle in $\ket0$, and that is
+why superconducting chips live in dilution refrigerators at 10 to 20~millikelvin, colder
+than outer space. In practice the chip runs warmer than the refrigerator, and a fraction
+of a percent of qubits start in $\ket1$, so machines often reset them actively before
+each run: measure, and flip the ones that came out wrong.
+
+\subsection*{3. Coherence}
+
+A transmon in $\ket1$ eventually drops to $\ket0$, handing its quantum of energy to the
+environment. The probability that it has survived after a time $t$ is $e^{-t/T_1}$, where
+$T_1$ is the \emph{relaxation time}. The relative phase between $\ket0$ and $\ket1$ also
+drifts and is lost, on a time scale called $T_2$. Interference needs both.
+
+What the criterion asks for is a ratio, not a time. A transmon with $T_1 = 100\,\mu$s
+running 50~ns gates loses about 0.05\% per gate to relaxation alone, and fits about 2000
+gates into one $T_1$. The best transmons reported in 2025, with $T_1$ around a
+millisecond, fit about 20\,000. In 1999 Nakamura's box lasted a few nanoseconds; in
+twenty-five years coherence improved by about six orders of magnitude.
+
+Shor's algorithm on RSA-2048 needs billions of operations. A ratio of $10^4$ is not
+close, and no improvement in materials will close five orders of magnitude. That is why
+error correction, the subject of Part~\ref{part:qec}, is not optional.
+
+\subsection*{4. Universal gates}
+
+A one-qubit gate on a transmon is a microwave pulse at the qubit frequency. While the
+pulse is on, the state turns steadily from $\ket0$ toward $\ket1$ and back, a rotation on
+the Bloch sphere; the length of the pulse sets the angle and its phase sets the axis.
+
+\begin{history}{1937 \textperiodcentered{} Columbia}
+Isidor Rabi sent beams of molecules through an oscillating magnetic field and saw their
+nuclear spins flip when the field was tuned to the right frequency. The steady flipping
+back and forth under a resonant drive is called a \emph{Rabi oscillation}, and Rabi's
+method won him the 1944 Nobel Prize. It became nuclear magnetic resonance, then MRI.
+Nakamura's result of 1999 was a Rabi oscillation in a circuit, and every single-qubit gate
+on every platform since is one too.
+\end{history}
+
+Two-qubit gates need two transmons to interact, through a capacitor or a tunable coupler
+between them. That only works between neighbors on the chip. A gate between distant
+qubits has to be built from a chain of swaps, which adds time and error.
+
+Is that menu enough? \emph{Universal} means that a small, fixed set of gates can
+approximate any unitary to any precision, and the right set is not obvious.
+
+\begin{history}{1998 \textperiodcentered{} the Gottesman--Knill theorem}
+Daniel Gottesman, building on work with Emanuel Knill, proved that circuits made only of
+Hadamard, CNOT and the phase gate $S = \mathrm{diag}(1, i)$, plus measurements, can be
+simulated efficiently on a classical computer, no matter how many qubits they use or how
+much entanglement they create. These are the \emph{Clifford} gates, and with them alone a
+quantum computer is no more powerful than a laptop.
+\end{history}
+
+Add a single gate, $T = \mathrm{diag}(1, e^{i\pi/4})$, a $45^\circ$ turn about the vertical
+axis of the Bloch sphere, and the set becomes universal. Robert Solovay and Alexei Kitaev
+showed independently, in 1995 and 1997, that any one-qubit gate can then be approximated
+to precision $\varepsilon$ by a sequence of $H$ and $T$ gates whose length grows only like
+a power of $\log(1/\varepsilon)$. A transmon can do any rotation directly, so it passes this
+criterion easily today. Under error correction it will not: rotations become sequences of
+discrete gates, and the $T$ gate is by far the most expensive of them.
+
+\subsection*{5. Measurement}
+
+A transmon is read through a microwave resonator coupled to it. The resonator's frequency
+shifts slightly depending on whether the qubit is in $\ket0$ or $\ket1$, so a weak pulse
+bounced off it comes back changed. This scheme, \emph{circuit quantum electrodynamics},
+was proposed by Alexandre Blais and colleagues at Yale in 2004. It takes hundreds of
+nanoseconds, during which the qubit may relax and give the wrong answer.
+
+Readout errors compound. If each qubit is read correctly 99\% of the time, all 100 qubits
+of a register come out right only 37\% of the time. At 99.9\% the chance rises to 90\%.
+Every fraction of a percent at the end of a computation is paid again for every qubit.
+
+\subsection*{6 and 7. Moving qubits}
+
+Here the transmon is weakest. Its quantum lives in microwave photons, which cannot leave
+the refrigerator without being swamped by thermal noise; at room temperature, as the
+table above shows, a microwave mode is a coin toss. Linking two refrigerators needs a
+converter from microwave to optical photons that preserves quantum states, and in 2025
+that was still a laboratory problem.
+
+\section{Trapped ions}
+
+\begin{history}{1995 \textperiodcentered{} Innsbruck and Boulder}
+Ignacio Cirac and Peter Zoller, in Innsbruck, proposed the first concrete architecture:
+ions held in a line by electric fields in a vacuum, with two levels of each ion as the
+qubit, and laser pulses as the gates. The ions interact through their shared vibrations.
+The same year, Christopher Monroe and David Wineland, at NIST in Boulder, demonstrated a
+controlled-NOT gate on a single beryllium ion. Wineland shared the 2012 Nobel Prize, with
+Serge Haroche, for manipulating individual quantum systems.
+\end{history}
+
+Here the qubit is an atom that has lost one electron. Its outermost electron has two
+energy levels that differ by the orientation of its spin relative to the nucleus. In the
+ytterbium ion $^{171}\mathrm{Yb}^+$, one of the most used, the two levels are 12.6~GHz
+apart. Nature built the ladder; nobody had to bend it. The same checklist gives a very
+different picture.
+
+\subsection*{1. Characterized and scalable}
+
+Every ytterbium ion in the universe is identical, so every qubit has exactly the same
+frequency, known to many decimal places. Characterization comes for free, and this is the
+ions' great advantage over anything fabricated.
+
+Scaling is their problem. The ions sit in a line, held apart by their mutual repulsion and
+coupled by the vibrations of the whole chain. Add ions and the chain gets longer, its
+vibrations crowd together, and gates get slower and harder to aim. A single chain stops
+being practical at a few dozen ions. The plan since 2002, proposed by David Kielpinski,
+Monroe and Wineland, is to shuttle ions between zones of a trap, like trains in a yard, so
+that gates always act on small groups.
+
+\subsection*{2. Initialization}
+
+Compare with the transmon. A 12.6~GHz qubit at room temperature is in $\ket1$ about half the
+time, exactly the coin toss of the table above, and ion traps run at room temperature. They
+do not need cold, because they do not rely on equilibrium. A laser tuned to excite the ion
+from every state except $\ket0$ keeps kicking it until it falls into $\ket0$, where the laser
+can no longer touch it. This \emph{optical pumping} prepares the qubit with probability above
+99.9\%. The criterion asks for a known state, not a cold one; a one-way process is enough.
+
+\subsection*{3. Coherence}
+
+The two levels of the ion are barely disturbed by stray fields, and the ion floats in vacuum,
+touching nothing. In 2021 a single ion kept its phase for over an hour. That is about a
+billion times longer than a transmon.
+
+But criterion 3 is about a ratio. A two-qubit gate on ions takes around 100~$\mu$s, a
+thousand times slower than on a transmon, so the number of gates per coherence time lands at
+about $10^4$, the same range. The hour-long coherence does not buy a longer computation; it
+buys a slower one.
+
+\subsection*{4. Universal gates}
+
+One-qubit gates are laser or microwave pulses, Rabi oscillations again. Two-qubit gates use
+the chain: a laser couples the internal state of two ions to the vibration they share, and
+the vibration carries the interaction from one to the other. Any ion in the chain can be
+coupled to any other, so there are no swaps. In 2024, Quantinuum reported two-qubit gates
+with 99.9\% fidelity, the best of any platform at the time.
+
+\subsection*{5. Measurement}
+
+Ions are read by a method Hans Dehmelt proposed in 1975. Shine a laser tuned so that the ion
+scatters light only when it is in one of the two states. In that state it glows, millions of
+photons per second; in the other it stays dark. Count the photons and you have the answer,
+with fidelity above 99.9\%.
+
+\subsection*{6 and 7. Moving qubits}
+
+Ions emit optical photons, which travel through ordinary fiber. In 2007 Monroe's group
+entangled two ions held in separate traps a meter apart, using the photons each one
+emitted. This is the ions' second advantage: modular machines linked by light are a natural
+extension, not a research problem.
+
+\section{The others}\label{sec:others}
+
+The other platforms are easiest to understand through the criterion where they break. Topological
+qubits come after them, in a section of their own, because they need more explanation.
+
+\textbf{Nuclear magnetic resonance: criteria 1 and 2.} In 1997 David Cory, Amr Fahmy and
+Timothy Havel, and separately Neil Gershenfeld and Isaac Chuang, proposed using the nuclear
+spins of molecules in a liquid as qubits, driven by the radio pulses of NMR machines. In 2001
+Lieven Vandersypen and colleagues at IBM used seven spins to run Shor's algorithm and factor
+15. But a nuclear spin at 400~MHz, at room temperature, is in its upper state with probability
+49.998\%: initialization fails, and badly. NMR worked around it with statistical tricks over
+trillions of molecules, at the cost of a signal that falls exponentially with the number of
+qubits, which fails criterion 1. In 1999 Samuel Braunstein and colleagues showed that the NMR
+experiments of the time never created entanglement at all. It was useful for testing ideas, and
+a dead end for computing.
+
+\textbf{Neutral atoms: criteria 1 and 4.} Atoms without charge, held by tightly focused laser
+beams called optical tweezers. Like ions, they are identical by nature, and they can be moved,
+which gives flexible connections. Scale is their strength: in 2025 a Caltech group trapped more
+than six thousand atoms in one array. Trapping is not computing, though. Neutral atoms barely
+interact, so two-qubit gates excite them to huge Rydberg states, an idea proposed by Dieter
+Jaksch and colleagues in 2000, and those gates are slower and less accurate than one-qubit gates.
+Atoms also escape the tweezers, which is a qubit vanishing from the computation.
+
+\textbf{Photons: criterion 4.} The qubit is the polarization or the path of a photon. Photons
+barely interact with the environment, which is excellent for criterion 3 and makes them the
+natural answer to criteria 6 and 7. For the same reason they barely interact with each other,
+which is fatal for two-qubit gates. In 2001 Emanuel Knill, Raymond Laflamme and Gerard Milburn
+showed that gates can be built from mirrors, beam splitters and measurements, but they only work
+with some probability, and the overhead is large.
+
+\textbf{Spins in semiconductors: criterion 1.} Daniel Loss and DiVincenzo proposed in 1998 to use
+the spin of single electrons trapped in quantum dots, tiny traps in silicon. They would scale like
+transistors, which is the whole appeal. But each dot is shaped by a few atoms of disorder, so every
+qubit is slightly different, and characterizing and controlling them uniformly is still the
+obstacle.
+
+\section{Topological qubits}\label{sec:topological}
+
+Every platform so far stores the qubit in something local: two levels of a circuit, of an ion,
+of an atom, of a spin. Then it defends that local thing from the world, first by isolating it
+and in the end by error correction, which Part~\ref{part:qec} will show costs hundreds of
+physical qubits per logical one. The topological approach tries to store the qubit somewhere
+local noise cannot reach. It has not yet passed criterion 1: there is no undisputed
+demonstration that the qubit exists, and Chapter~\ref{ch:majorana} tells that story. This
+section explains how the device is supposed to work, because the claims in that chapter only
+make sense against it. It uses the bosons, fermions and anyons of Section~\ref{sec:identical}.
+
+\begin{concept}{Topological protection}
+Information stored in a global property of a system, such as the joint parity of two
+distant zero modes, so that no local disturbance can change it.
+
+\textbf{What it fixes:} criterion 3 by construction. Instead of fighting decoherence only
+with many physical qubits per logical qubit, the hardware itself does part of the job.
+
+\textbf{What it costs:} materials that nobody knew how to make, a protection that only
+holds while an energy gap stays open and no electron jumps in from outside, and a gate set
+that is not universal.
+\end{concept}
+
+\subsection*{The gap}
+
+In a superconductor the electrons bind into Cooper pairs, and the pairs, being bosons, all
+share one collective state. Leon Cooper showed in 1956 that the pairs form, and in 1957 John
+Bardeen, Cooper and Robert Schrieffer built the full theory. Breaking a pair costs energy: at
+least $\Delta$ for each electron set free, the \emph{superconducting gap}. Below the gap there
+is nothing to excite, which is why a superconducting circuit is so quiet. The BCS theory gives
+$\Delta \approx 1.76\,k_B T_c$, with $T_c$ the critical temperature. Aluminum, with $T_c =
+1.2$~K, has a gap of about $180\,\mu$eV. Lead, with $T_c = 7.2$~K, has about 1.4~meV,
+somewhat more than the BCS estimate of 1.1~meV.
+
+At 15~mK, $k_B T$ is $1.3\,\mu$eV, a hundred and forty times smaller than the gap of
+aluminum, so heat alone should break essentially no pairs. In practice a few pairs are always
+broken anyway, by stray radiation and by heat leaking down the wiring, far more than the
+temperature predicts. The free electrons they leave, called \emph{quasiparticles}, wander
+through the metal. For a transmon they are one source of error among many. For a topological
+qubit they are the main enemy, as the next figure shows.
+
+\subsection*{Half of an electron}
+
+An excitation of a superconductor is not quite an electron. It is a mixture of an electron and
+a \emph{hole}, the absence of an electron, which behaves as a particle of opposite charge. A
+hole is to an electron what an antiparticle is to a particle. In some superconductors a special
+excitation can appear that is an exact half-and-half mixture, at zero energy. It is its own
+antiparticle, which is the property Ettore Majorana found in an equation in 1937, and so it is
+called a \emph{Majorana zero mode}. Its operator equals its own adjoint, $\gamma = \gamma^\dagger$.
+
+One Majorana zero mode is half of an ordinary fermion state. Two of them, $\gamma_1$ and
+$\gamma_2$, combine into one complete fermion mode,
+\[
+  c = \frac{\gamma_1 + i\gamma_2}{2},
+\]
+and an ordinary fermion mode can only be empty or full, by the exclusion principle. That
+``empty or full'' is a bit, and its value is called the \emph{parity}.
+
+The point is where the bit lives. It is not in either half. It is in the pair, and the halves
+can be micrometers apart. Noise that touches one end of the wire, a stray field, a vibrating
+atom, cannot read or change a value that only exists in the combination of both ends. One
+thing can change it: an electron arriving from outside, such as a quasiparticle, which turns
+an empty mode into a full one. This is called \emph{quasiparticle poisoning}, and the average
+wait for it is the parity lifetime that Chapter~\ref{ch:majorana} is about.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1mm, y=1mm]
+  % where each half lives
+  \draw[black!25, dashed, line width=0.6pt] (0,13) -- (90,13);
+  \fill[hfConcept!15] (0,13) -- plot[domain=0:40, samples=60] (\x, {13 + 8*exp(-\x/5)}) -- (40,13) -- cycle;
+  \fill[hfConcept!15] (50,13) -- plot[domain=50:90, samples=60] (\x, {13 + 8*exp(-(90-\x)/5)}) -- (90,13) -- cycle;
+  \draw[hfConcept, line width=1pt, domain=0:40, samples=60] plot (\x, {13 + 8*exp(-\x/5)});
+  \draw[hfConcept, line width=1pt, domain=50:90, samples=60] plot (\x, {13 + 8*exp(-(90-\x)/5)});
+  \node[hf/note] at (45,22) {each half sits at one end;\\the middle holds nothing};
+  % the device
+  \draw[hfSource, fill=black!30, line width=0.8pt] (0,6) rectangle (90,10);
+  \node[font=\sffamily\footnotesize, text=white] at (45,8) {superconductor};
+  \draw[hfSource, fill=hfSource!10, line width=0.8pt] (0,0) rectangle (90,6);
+  \node[font=\sffamily\footnotesize, text=black!70] at (45,3) {semiconductor nanowire};
+  \draw[black!50, -{Stealth[length=2mm]}, line width=0.8pt] (52,30) -- (78,30);
+  \node[hf/note, anchor=east] at (51,30) {magnetic field along the wire};
+  % the two halves
+  \fill[hfConcept] (5,3) circle (2.4);
+  \fill[hfConcept] (85,3) circle (2.4);
+  \node[font=\small, text=white] at (5,3) {$\gamma_1$};
+  \node[font=\small, text=white] at (85,3) {$\gamma_2$};
+  % together: one mode
+  \draw[hfConcept, dashed, line width=0.8pt] (5,0.6) .. controls (30,-18) and (60,-18) .. (85,0.6);
+  \node[hf/note, text=hfConcept] at (45,-17.5) {together, one fermion mode $c = (\gamma_1 + i\gamma_2)/2$:\\empty or full, and that is the parity bit};
+  % local noise
+  \draw[hfAlert, line width=0.8pt, decorate, decoration={snake, amplitude=1mm, segment length=3mm}] (-17,3) -- (-4,3);
+  \draw[hfAlert, -{Stealth[length=2mm]}, line width=0.8pt] (-4,3) -- (2.2,3);
+  \node[hf/note, text=hfAlert, anchor=north] at (-11,-1) {local noise\\touches one half:\\the bit is safe};
+  % poisoning
+  \draw[hfAlert, -{Stealth[length=2mm]}, line width=0.8pt] (101,3) -- (87.8,3);
+  \node[draw=hfAlert, circle, inner sep=0.6pt, font=\scriptsize, text=hfAlert] at (104,3) {$e^-$};
+  \node[hf/note, text=hfAlert, anchor=north] at (101,-1) {an electron\\from outside\\flips the bit};
+\end{tikzpicture}
+\caption{A bit stored in the two ends of a wire. Two Majorana zero modes, $\gamma_1$ and
+$\gamma_2$, sit at the ends of a semiconductor nanowire covered by a superconductor, in a
+magnetic field along the wire. Neither is a state by itself; together they form one fermion
+mode, empty or full, and that is the parity bit. Noise acting on one end reaches only half of
+it and cannot read or change the bit. An electron arriving from outside does change it, and
+the average wait for that event is the parity lifetime.}\label{fig:majorana-wire}
+\end{figure}
+
+\subsection*{The recipe}
+
+In October 2000 Kitaev wrote down the simplest model with a Majorana zero mode at each end: a
+chain of sites in which electrons of a single spin direction pair up. Ordinary superconductors
+pair electrons of opposite spins, so no known material did that. In 2010 two groups found a way
+to fake it with three ordinary ingredients: Roman Lutchyn, Jay Sau and Sankar Das Sarma, and
+separately Yuval Oreg, Gil Refael and Felix von Oppen.
+
+\begin{itemize}
+\item A semiconductor nanowire with strong \emph{spin--orbit coupling}, such as indium arsenide,
+in which an electron's spin is tied to its direction of motion.
+\item A magnetic field along the wire, which pushes one spin direction up in energy and out of
+the way.
+\item A coat of ordinary superconductor, such as aluminum, which by contact induces pairing in
+the wire. This is the \emph{proximity effect}.
+\end{itemize}
+
+Past a critical magnetic field, the wire enters a \emph{topological phase}, and a Majorana zero
+mode should appear at each end. The phase has its own gap, the \emph{topological gap}, which
+protects the modes, and it is much smaller than the gap of the superconductor that induces it:
+tens of microelectronvolts in Microsoft's devices, against $180\,\mu$eV for aluminum. Two
+things go wrong easily. Disorder in the wire can close the topological gap in places, and then
+ordinary states trapped near the ends, called \emph{Andreev bound states}, can sit near zero
+energy and imitate Majorana modes in most measurements. And the two modes of a finite wire are
+not perfectly independent: they overlap a little, by an amount that falls exponentially with
+the length of the wire, and that overlap slowly scrambles the phase of the qubit.
+
+\subsection*{The tetron}
+
+One wire gives one parity, which is a bit, not a qubit. In 2017 Torsten Karzig and colleagues at
+Microsoft published designs for qubits made of four or more modes, and the simplest is the one
+Microsoft builds: the \emph{tetron}. Two parallel topological wires are joined by an ordinary
+superconducting backbone into a single small island, with four modes, $\gamma_1$ to $\gamma_4$,
+at the four ends.
+
+The island is small, so adding one electron to it costs a noticeable amount of electrostatic
+energy, the \emph{charging energy}. That fixes the total parity of the four modes and is the first
+defense against poisoning. With the total fixed, the four modes have two states left, and those
+are one qubit. Its $Z$ is the parity of the pair along one wire, $i\gamma_1\gamma_2$. Its $X$ is
+the parity of a pair across the two wires, $i\gamma_1\gamma_3$. A line of algebra with
+$\gamma^2 = 1$ and $\gamma_j\gamma_k = -\gamma_k\gamma_j$ shows that these two operators
+anticommute, exactly like the $X$ and $Z$ of Chapter~\ref{ch:state}.
+
+Reading a parity uses a \emph{quantum dot}, a tiny island in the semiconductor that holds a few
+electrons, coupled to the two modes being measured. An electron can tunnel from the dot through
+either mode, and the two paths close a loop threaded by a magnetic flux, so they interfere. How
+easily charge moves on and off the dot, its \emph{quantum capacitance}, then depends on the
+parity of the pair, and a radio-frequency signal reflected off the dot reads it in a single shot.
+A qubit needs both loops: one along a wire for $Z$ and one across the wires for $X$.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1mm, y=1mm]
+  % wires
+  \draw[hfSource, fill=hfSource!10, line width=0.8pt] (0,20) rectangle (70,25);
+  \draw[hfSource, fill=hfSource!10, line width=0.8pt] (0,0) rectangle (70,5);
+  \draw[hfSource, fill=black!30, line width=0.8pt] (32,5) rectangle (38,20);
+  \node[hf/note, anchor=west] at (39,12.5) {superconducting backbone};
+  \node[font=\sffamily\footnotesize, text=black!70] at (50,22.5) {topological wire};
+  \node[font=\sffamily\footnotesize, text=black!70] at (50,2.5) {topological wire};
+  % modes
+  \foreach \x/\y/\n in {4/22.5/1, 66/22.5/2, 4/2.5/3, 66/2.5/4} {
+    \fill[hfConcept] (\x,\y) circle (2.3);
+    \node[font=\scriptsize, text=white] at (\x,\y) {$\gamma_{\n}$};
+  }
+  % Z loop along the top wire
+  \draw[hfConcept, dashed, line width=0.9pt, rounded corners=4pt] (-3,18) rectangle (73,33);
+  \fill[hfConcept!25] (35,33) circle (2.6);
+  \draw[hfConcept, line width=0.8pt] (35,33) circle (2.6);
+  \node[font=\scriptsize] at (35,33) {QD};
+  \node[hf/note, text=hfConcept, anchor=west] at (75,29) {$Z$ loop: a dot reads\\the parity $i\gamma_1\gamma_2$\\along one wire};
+  % X loop across the left ends
+  \draw[hfReflect, dashed, line width=0.9pt, rounded corners=4pt] (-6,-3) rectangle (11,28.5);
+  \fill[hfReflect!25] (-6,12.5) circle (2.6);
+  \draw[hfReflect, line width=0.8pt] (-6,12.5) circle (2.6);
+  \node[font=\scriptsize] at (-6,12.5) {QD};
+  \node[hf/note, text=hfReflect, anchor=east] at (-10,12.5) {$X$ loop: a dot reads\\the parity $i\gamma_1\gamma_3$\\across the wires};
+  % note
+  \node[hf/note] at (35,-9) {one island, four modes, total parity fixed by the charging energy: one qubit};
+\end{tikzpicture}
+\caption{A tetron, the qubit Microsoft builds. Two topological wires, joined by an ordinary
+superconducting backbone, hold four Majorana zero modes. With the total parity fixed, the
+parity along one wire is the qubit's $Z$ and the parity across the wires is its $X$. Each is
+read by a quantum dot (QD) coupled to the two modes, through an interference loop threaded by a
+magnetic flux.}\label{fig:tetron}
+\end{figure}
+
+\subsection*{Gates by measurement}
+
+Majorana zero modes are non-abelian anyons. Dmitri Ivanov showed in 2000 that exchanging two of
+them applies a unitary on the shared states, not just a phase, which is what Kitaev's 1997
+proposal needed. Physically moving modes along wires is hard, though, and in 2008 Parsa
+Bonderson, Michael Freedman and Chetan Nayak showed that the same gates can be produced by a
+sequence of parity measurements, with no motion at all. That is Microsoft's plan:
+\emph{measurement-only} topological computing, with the dots of Figure~\ref{fig:tetron} as the
+only tool.
+
+The limit is the gate set. Exchanging Majorana modes produces only Clifford gates, quarter turns,
+and the Gottesman--Knill theorem earlier in this chapter says that Clifford gates alone can be
+simulated on a laptop. The $T$ gate has to come from \emph{magic states}, special states prepared
+outside the topological protection and purified at a cost that error correction has to pay.
+Topological protection buys criterion 3 and a smaller overhead per logical qubit. It does not
+buy universality.
+
+\subsection*{The checklist}
+
+\textbf{1. Characterized and scalable.} Not shown. Whether the modes in the devices built so far
+are topological or ordinary Andreev states is the open question of Chapter~\ref{ch:majorana}. If
+they are topological, the wires are made by lithography, like transmons, and could scale the same
+way.
+
+\textbf{2. Initialization.} By measurement: measuring a parity leaves the qubit in a known state.
+
+\textbf{3. Coherence.} Two clocks, one per parity. $Z$ survives until a quasiparticle poisons the
+island. $X$ survives until the overlap between modes and the noise around them scramble it. In the
+2025 devices the first was milliseconds and the second microseconds.
+
+\textbf{4. Universal gates.} Clifford gates by sequences of measurements; the $T$ gate by magic
+states.
+
+\textbf{5. Measurement.} The quantum dot and its capacitance, in a single shot. In 2025 the $Z$
+readout was wrong 0.5\% of the time and the $X$ readout 16\%.
+
+\textbf{6 and 7. Moving qubits.} The same problem as transmons: everything lives in a
+dilution refrigerator and talks through microwaves.
+
+\section{No winner yet}
+
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{>{\raggedright\arraybackslash}p{22mm}*{6}{>{\raggedright\arraybackslash}p{16.5mm}}}
+\hline
+ & \textbf{1.} characterized, scalable & \textbf{2.} initial state & \textbf{3.} coherence per gate & \textbf{4.} gates & \textbf{5.} readout & \textbf{6--7.} moving qubits \\
+\hline
+super\-con\-duct\-ing & fabricated, wiring & needs mK & $\sim10^4$ & neighbors only & $\sim$99\% & hard \\
+trapped ions & identical; short chains & optical pumping & $\sim10^4$ & all-to-all, slow & $>$99.9\% & natural \\
+neutral atoms & identical; thousands & optical pumping & good & Rydberg, slower & good & possible \\
+photons & sources, losses & easy & excellent & proba\-bil\-is\-tic & detectors & natural \\
+semicond. spins & non-uniform & needs mK & improving & neighbors & improving & hard \\
+topological & not shown & by mea\-sure\-ment & -- & Clifford only & -- & hard \\
+\hline
+\end{tabular}
+\end{center}
+
+Every platform trades one criterion against another. The transmon is easy to make and hard to
+wire; the ion is perfect and slow; the atom is plentiful and loosely coupled; the photon travels
+well and does not interact. Charts that score each platform from 0 to 5 circulate widely, and they
+are opinions dressed as data. The table above says something more modest and more durable: none
+of them has yet met all five criteria at the scale that error correction needs, which is the
+subject of Part~\ref{part:qec}.

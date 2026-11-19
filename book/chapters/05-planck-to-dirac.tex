@@ -1,0 +1,195 @@
+\chapter{From Planck to Dirac}\label{ch:quantum}
+
+\begin{etymology}
+\textbf{Quantum} is Latin for ``how much''. Planck used it for the smallest
+amount of energy an oscillator can emit or absorb: a packet that cannot be
+divided.
+
+\textbf{Spectrum} is Latin for ``appearance'' or ``image'', from \emph{specere},
+``to look''. Newton used it for the band of colors a prism makes from white
+light. In quantum mechanics, the spectrum of an operator is the set of values a
+measurement can return: what the system can show when you look.
+
+\textbf{Uncertainty} comes from \emph{incertus}: \emph{in-}, ``not'', and
+\emph{certus}, ``settled'', from \emph{cernere}, ``to separate''. Something that
+cannot be sharply separated from what surrounds it.
+\end{etymology}
+
+Nobody set out to invent quantum mechanics. Classical physics was forced to give
+way by experiments it could not explain, and the fixes proposed between 1900 and
+1927 converged on a formalism that Dirac and von Neumann put in its final form.
+That formalism is the native language of the qubit.
+
+\section{Three experiments classical physics could not explain}
+
+\begin{history}{1900 \textperiodcentered{} Berlin}
+A hot body glows, and the color of the glow depends only on its temperature.
+Classical physics predicted that a perfect absorber, a \emph{black body}, would
+radiate more and more energy at higher frequencies, without limit; Paul
+Ehrenfest later named this the \emph{ultraviolet catastrophe}. Experiments
+showed the opposite: the intensity peaks and falls off. On 14 December 1900, Max
+Planck presented a formula that fitted the data perfectly. To derive it, he had to
+assume that energy is emitted in packets of size $E = h\nu$, proportional to the
+frequency. In a letter of 1931 he called it ``an act of desperation''. He did not
+believe the packets were real.
+\end{history}
+
+\begin{history}{1905 \textperiodcentered{} Bern}
+Light shining on a metal knocks electrons out of it, but only if its frequency is
+above a threshold; below it, no intensity is enough. Philipp Lenard had measured
+this in 1902, and classical waves could not explain it. Albert Einstein, then a
+patent clerk, proposed that light itself comes in packets of energy $h\nu$, later
+called photons. One photon either has enough energy to free an electron or it
+does not. Robert Millikan spent ten years trying to prove Einstein wrong and ended
+up confirming him in 1916. Einstein's Nobel Prize of 1921 was for this, not for
+relativity.
+\end{history}
+
+But Thomas Young had shown in 1801 that light makes interference patterns, like a
+wave. Light was behaving as a wave in some experiments and as a particle in others.
+
+\begin{history}{1913 \textperiodcentered{} Manchester and Copenhagen}
+Atoms heated in a flame emit light only at specific frequencies, a barcode of
+sharp lines unique to each element. Niels Bohr proposed that the electron in a
+hydrogen atom can only occupy certain orbits, and emits a photon when it jumps
+from one to another, with energy equal to the difference. The model reproduced
+the hydrogen lines exactly, and nobody, Bohr included, could say why the orbits
+were allowed.
+\end{history}
+
+The three cases point the same way: energy in the microscopic world comes in
+discrete steps. A theory was needed in which discreteness is built in.
+
+\section{Waves of matter}
+
+In 1924 Louis de Broglie argued in his doctoral thesis that if light, a wave,
+behaves like particles, then particles might behave like waves, with wavelength
+$\lambda = h/p$. Clinton Davisson and Lester Germer saw electrons diffract off a
+nickel crystal in 1927.
+
+Two versions of the new mechanics appeared within months of each other. In 1925
+Werner Heisenberg, recovering from hay fever on the island of Helgoland, built a
+mechanics out of tables of numbers that Max Born recognized as matrices. In 1926
+Erwin Schrödinger wrote a wave equation for a function $\psi(x, t)$:
+\[
+  i\hbar\,\frac{\partial \psi}{\partial t} = \hat H\psi
+  = \Big(-\frac{\hbar^2}{2m}\nabla^2 + V(x)\Big)\psi .
+\]
+The two looked nothing alike. Schrödinger himself showed in 1926 that they give
+the same predictions.
+
+Put a particle in a box of width $L$ with impenetrable walls. The solutions of
+Schrödinger's equation are sine waves that fit exactly in the box, and only some
+energies are allowed:
+\[
+  \psi_n(x) = \sqrt{2/L}\,\sin(n\pi x / L), \qquad
+  E_n = \frac{n^2 \pi^2 \hbar^2}{2 m L^2}, \qquad n = 1, 2, 3, \dots
+\]
+Discreteness is no longer a postulate. It comes out of the equation, from the
+requirement that the wave fit.
+
+\begin{history}{1926 \textperiodcentered{} Göttingen}
+What is $\psi$? Schrödinger thought it was a real wave of matter. Max Born, in a
+paper on collisions, proposed instead that it gives probabilities. The famous
+rule (the probability is the square of the amplitude) appears in a footnote
+added while the paper was in proof. The main text had said the probability was
+proportional to $\psi$ itself. Born got the Nobel Prize for it in 1954.
+\end{history}
+
+\section{Dirac and von Neumann}
+
+Paul Dirac's \emph{Principles of Quantum Mechanics} (1930) unified matrices and
+waves as two descriptions of the same abstract objects: states and operators.
+John von Neumann's \emph{Mathematical Foundations of Quantum Mechanics} (1932)
+gave it the rigorous form still used today, built on Hilbert spaces
+(Chapter~\ref{ch:hilbert}). The bra--ket notation, $\ket{\psi}$ for a state and
+$\bra{\phi}$ for its dual, came later, in a short paper Dirac published in 1939.
+
+In that language, quantum mechanics fits in five postulates:
+
+\begin{enumerate}
+\item The state of a system is a unit vector $\ket{\psi}$ in a Hilbert space.
+\item Every measurable quantity is a Hermitian operator.
+\item The possible results of a measurement are the eigenvalues of that operator.
+\item After a measurement that returns the eigenvalue $\lambda_k$, the state
+becomes the corresponding eigenvector $\ket{\lambda_k}$.
+\item Between measurements, the state evolves as
+$\ket{\psi(t)} = e^{-i\hat H t/\hbar}\ket{\psi(0)}$.
+\end{enumerate}
+
+Every quantum algorithm is these postulates at work. Preparing $\ket{0}$ on every
+qubit is preparing a known state. Applying gates is applying
+$e^{-i\hat Ht}$ for carefully chosen Hamiltonians. Reading the result is a
+measurement. Chapter~\ref{ch:state} goes through them again with one qubit.
+
+\section{The uncertainty principle}
+
+\begin{history}{1927 \textperiodcentered{} Copenhagen}
+Heisenberg's first explanation of uncertainty was a thought experiment: to see
+where an electron is, you hit it with light, and the light kicks it, disturbing
+its momentum. The same year, Earle Kennard proved the precise inequality
+$\Delta x\,\Delta p \geq \hbar/2$, where $\Delta$ is the standard deviation over
+many identically prepared systems. In 1929 Howard Percy Robertson generalized it to
+any pair of quantities.
+\end{history}
+
+Heisenberg's microscope is the wrong explanation, and it is still the one most
+people learn. The disturbance story suggests that the particle has a definite
+position and momentum and that measuring spoils one of them. It does not have
+them. The real reason is that position and momentum are operators that do not
+commute:
+\[
+  [\hat x, \hat p] = i\hbar .
+\]
+Two operators that do not commute have no common set of eigenvectors, so there is
+no state in which both have a definite value. For any two quantities $A$ and $B$,
+Robertson's inequality says
+\[
+  \Delta A\,\Delta B \geq \tfrac12 \big|\langle [\hat A, \hat B] \rangle\big| .
+\]
+A Gaussian wave packet reaches the minimum exactly: squeeze it in position and it
+spreads in momentum, and the product stays at $\hbar/2$. This is a statement
+about the geometry of the state space, not about instruments.
+
+\section{What this means for a qubit}
+
+\textbf{Measurement destroys superposition.} Measuring forces the system into an
+eigenstate of what you measured. You gain a definite value and lose the
+superposition you had.
+
+\textbf{Superposition is not ignorance.} Before a measurement, the qubit is not in
+a definite state that we happen not to know. In 1964 John Bell turned this into a
+testable inequality; Alain Aspect's experiments of 1982 and many since have
+confirmed that no theory of hidden definite values reproduces quantum
+mechanics. Aspect, John Clauser and Anton Zeilinger shared the 2022 Nobel Prize
+for these tests. This is what separates a quantum computer from a classical
+machine flipping coins.
+
+\textbf{Unknown states cannot be copied.}
+
+\begin{history}{1982 \textperiodcentered{} FLASH}
+Nick Herbert proposed a device he called FLASH that would use quantum
+correlations to send signals faster than light. The scheme needed to make many
+copies of an unknown quantum state. Refuting it, William Wootters and Wojciech
+Zurek, and independently Dennis Dieks, proved in 1982 that no physical process
+can copy an arbitrary unknown state.
+\end{history}
+
+\begin{concept}{No-cloning theorem}
+There is no operation that takes an unknown state $\ket{\psi}$ and a blank qubit
+and produces $\ket{\psi}\ket{\psi}$. The proof uses only linearity: a machine that
+copied $\ket{0}$ and $\ket{1}$ correctly would turn their superposition into an
+entangled state, not into two copies.
+
+\textbf{What it fixes:} it is why quantum key distribution is secure, and why
+Herbert's machine cannot work.
+
+\textbf{What it costs:} every classical way of protecting data against errors
+involves copies. Quantum error correction had to be invented from scratch
+(Part~\ref{part:qec}).
+\end{concept}
+
+No-cloning is often presented as a consequence of the uncertainty principle. It
+is better to see it as a consequence of linearity. The two are consistent (if you
+could clone, you could measure position on one copy and momentum on another), but
+the proof needs nothing more than the fact that quantum evolution is linear.

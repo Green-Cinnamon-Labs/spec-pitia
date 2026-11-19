@@ -1,0 +1,540 @@
+\chapter{From Newton to Hamilton}\label{ch:classical}
+
+\begin{etymology}
+\textbf{Mechanics} comes from the Greek \emph{mēkhanikē}, the art of machines,
+from \emph{mēkhanē}, ``machine'' or ``contrivance''. It came to mean the study of
+how things move under fixed rules.
+
+\textbf{Energy} comes from the Greek \emph{enérgeia}: \emph{en-}, ``in'', and
+\emph{érgon}, ``work''. Something at work, in action.
+
+\textbf{Hamiltonian} is named after William Rowan Hamilton (1805--1865), the Irish
+mathematician who rewrote Newton's mechanics in terms of position and momentum.
+\end{etymology}
+
+Quantum mechanics was not invented from scratch. It grew out of classical
+mechanics at the moment classical mechanics stopped matching experiments, and it
+kept a surprising amount of the old structure. To see what changed, you need to
+know what was there before.
+
+Classical mechanics was written three times, by Newton, Lagrange and Hamilton.
+The three versions say the same thing about the physical world. What changes is
+the language, and each new language is more abstract and more powerful than the
+last. Hamilton's is the one quantum mechanics kept.
+
+\section{Newton: forces and trajectories}
+
+\begin{history}{1687 \textperiodcentered{} Cambridge}
+Isaac Newton published the \emph{Philosophiæ Naturalis Principia Mathematica} in
+1687, after Edmond Halley pushed him to write up his work on orbits and paid for
+the printing. The three laws of motion and the law of gravitation explained, with
+one set of equations, why apples fall and why planets follow ellipses.
+\end{history}
+
+The second law, $F = ma$, says that force changes motion. Written out, the
+acceleration is the rate of change of the rate of change of the position,
+\[
+  m\,\frac{d^2x}{dt^2} = F .
+\]
+Notice what this equation does not say. It does not give the position. It gives a
+relation between the position and how fast it changes, and the position itself has to
+be found from that relation. An equation of this kind is a \emph{differential
+equation}, and Newton had to invent the mathematics to write it.
+
+\begin{history}{1665--1736 \textperiodcentered{} Woolsthorpe, Hanover and London}
+In 1665 and 1666, with Cambridge closed by the plague, the young Newton worked out at
+his family's farm in Woolsthorpe what he called the \emph{method of fluxions}: a way
+of computing rates of change (fluxions) of quantities that flow in time. In a treatise
+written around 1671 he sorted the equations that relate a quantity to its fluxions into
+types and showed how to solve some of them, but he kept it unpublished; it appeared
+only in 1736, after his death. Gottfried Wilhelm Leibniz, in Hanover, found the same
+calculus independently, published first in 1684, and gave it the notation $dx/dt$ that
+is still used. He also coined the name, \emph{aequatio differentialis}. The quarrel over
+who came first poisoned English and Continental mathematics for decades.
+\end{history}
+
+\begin{concept}{Differential equation}
+An equation that relates an unknown function to its rates of change. The equation
+only says how the system changes from one instant to the next. Solving it means
+finding the function itself: the one that says where the system will be at every later
+moment, how it evolves. That function is the prize, and finding it is the whole point of
+writing the equation. When the function depends on a single variable, usually time, it
+is an \emph{ordinary} differential equation (ODE): the spring below, and every equation
+of motion in this chapter. When it depends on several variables at once, such as
+position and time, the rates of change are \emph{partial} derivatives and it is a
+\emph{partial} differential equation (PDE): the vibrating string (d'Alembert, 1747), the
+heat equation (Fourier, 1807, Chapter~\ref{ch:fourier}) and Schrödinger's equation
+(Chapter~\ref{ch:quantum}).
+
+\textbf{What it fixes:} physical laws are local. They say what happens in the next
+instant, here, given what is happening now. A differential equation is exactly that
+kind of statement, and it predicts the whole future from it.
+
+\textbf{What it costs:} most differential equations have no formula for their
+solution. You either find one of the few that do, or you compute the solution step by
+step.
+\end{concept}
+
+The state of a particle is its position and velocity, $(x, v)$. Give the state at one
+instant and the forces, and the differential equation fixes the whole future. This is
+classical determinism.
+
+The standard example is a mass on a spring. The spring pulls back with a force
+proportional to the displacement, $F = -kx$, so the equation of motion is the ODE
+$m\ddot{x} = -kx$ (a dot means a derivative in time, Newton's own notation). Solving it
+means finding a function whose second derivative is $-k/m$ times itself, and the
+cosine is such a function:
+\[
+  m\ddot{x} = -kx, \qquad x(t) = A\cos(\omega t + \phi), \qquad
+  \omega = \sqrt{k/m}.
+\]
+The mass oscillates forever with frequency $\omega$. This \emph{harmonic
+oscillator} comes back again and again in physics, and it comes back in
+quantum computing too: a superconducting qubit is a harmonic oscillator with a
+small defect added on purpose (Chapter~\ref{ch:hardware}).
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1mm, y=1mm]
+  % equilibrium line
+  \draw[black!35, dashed] (41,8) -- (41,-39) node[below, hf/note] {rest position, $x = 0$};
+  \foreach \row/\d/\lab in {0/12/a, 1/0/b, 2/-12/c} {
+    \pgfmathsetmacro{\y}{-\row*16}
+    \pgfmathsetmacro{\bx}{36+\d}
+    \pgfmathsetmacro{\seg}{(\bx-6)/9}
+    % wall and floor
+    \draw[line width=1pt] (0,\y-5) -- (0,\y+5);
+    \foreach \h in {-4,-2,...,4} \draw[black!45] (0,\y+\h) -- (-2,\y+\h-2);
+    \draw[black!40] (0,\y-5) -- (64,\y-5);
+    % spring
+    \draw[line width=0.7pt] (0,\y) -- (2,\y);
+    \draw[line width=0.7pt, decorate, decoration={coil, aspect=0.5,
+      segment length=\seg mm, amplitude=2.2mm}] (2,\y) -- (\bx-3,\y);
+    \draw[line width=0.7pt] (\bx-3,\y) -- (\bx,\y);
+    % block
+    \filldraw[fill=hfConcept!15, draw=hfConcept, line width=0.8pt]
+      (\bx,\y-5) rectangle (\bx+10,\y+5);
+    \node[font=\small] at (\bx+5,\y) {$m$};
+    \node[font=\sffamily\small\bfseries, text=black!60] at (-6,\y) {(\lab)};
+  }
+  % forces
+  \draw[hfAlert, line width=1pt, -{Stealth[length=2.2mm]}] (58,7) -- (47,7)
+    node[midway, above, hf/note, text=hfAlert] {$F = -kA$};
+  \node[hf/note, anchor=west] at (62,0) {$x = +A$};
+  \node[hf/note, anchor=west] at (62,-16) {$x = 0$};
+  \draw[hfAlert, line width=1pt, -{Stealth[length=2.2mm]}] (24,-25) -- (35,-25)
+    node[midway, above, hf/note, text=hfAlert] {$F = +kA$};
+  \node[hf/note, anchor=west] at (62,-32) {$x = -A$};
+  % x(t)
+  \begin{axis}[at={(82mm,-37mm)}, anchor=south west, width=52mm, height=50mm,
+      xmin=0, xmax=1.6, ymin=-1.3, ymax=1.3,
+      xtick={0,0.25,0.5,1}, xticklabels={$0$,$\frac{T}{4}$,$\frac{T}{2}$,$T$},
+      ytick={-1,0,1}, yticklabels={$-A$,$0$,$+A$},
+      xlabel={$t$}, ylabel={$x(t)$},
+      tick label style={font=\scriptsize}, label style={font=\small},
+      axis lines=middle, axis line style={black!50},
+      xlabel style={at={(ticklabel* cs:1.02)}, anchor=west},
+      ylabel style={at={(ticklabel* cs:1.02)}, anchor=south}]
+    \addplot[hfConcept, line width=0.9pt, domain=0:1.55, samples=120] {cos(360*x)};
+    \addplot[only marks, mark=*, mark size=1.6pt, hfAlert] coordinates {(0,1) (0.25,0) (0.5,-1)};
+    \node[font=\sffamily\scriptsize\bfseries, text=black!60, anchor=south west] at (axis cs:0.02,1) {(a)};
+    \node[font=\sffamily\scriptsize\bfseries, text=black!60, anchor=south east] at (axis cs:0.23,0.02) {(b)};
+    \node[font=\sffamily\scriptsize\bfseries, text=black!60, anchor=north west] at (axis cs:0.52,-1) {(c)};
+  \end{axis}
+\end{tikzpicture}
+\caption{A mass on a spring. (a) Stretched by $A$, the mass stops for an instant and
+is pulled back with force $-kA$. (b) At the rest position the force is zero, but the
+mass is moving at its fastest and overshoots. (c) Compressed by $A$, it stops again and
+is pushed out. The position
+traces $x(t) = A\cos\omega t$, and one full cycle takes $T = 2\pi/\omega$.}\label{fig:spring}
+\end{figure}
+
+Newton's method works well when you can write down every force. It becomes painful
+when the system has constraints: a pendulum on a rod, a bead on a wire, a ball rolling
+on a surface. What hurts is writing the equations of motion, and the pendulum shows
+why.
+
+A mass $m$ hangs from a rigid rod of length $\ell$ and swings. Newton's law works with
+forces and with the coordinates $x$ and $y$ of the mass, so you write $F = ma$ once for
+each direction. Two forces act: gravity, $mg$, which you know, and the tension $T$ of
+the rod, which you do not. The tension is whatever it takes to keep the mass on its
+circle, and it changes all the time as the mass swings. With the pivot at the origin,
+\[
+  m\ddot x = -T\,\frac{x}{\ell}, \qquad
+  m\ddot y = -T\,\frac{y}{\ell} - mg, \qquad
+  x^2 + y^2 = \ell^2 .
+\]
+Three unknown functions, $x(t)$, $y(t)$ and $T(t)$, two differential equations and a
+constraint. You have to use the constraint to eliminate the tension by hand before you
+can solve anything, and the tension is a quantity you never wanted to know. For a
+single pendulum this is a page of algebra. For a double pendulum, or a machine with a
+dozen joints, it becomes unmanageable.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1mm, y=1mm]
+  \fill[black!15] (-12,0) rectangle (12,2.5);
+  \draw[black!60, line width=0.8pt] (-12,0) -- (12,0);
+  \draw[black!30, dashed] (0,0) -- (0,-36);
+  \draw[black!40] (0,-36) arc (-90:-55:36);
+  \draw[black!40] (0,-36) arc (-90:-125:36);
+  % rod at theta = 28 degrees
+  \coordinate (m) at ({36*sin(28)},{-36*cos(28)});
+  \draw[black!70, line width=1.2pt] (0,0) -- (m);
+  \fill[black!70] (0,0) circle (0.9);
+  \draw[black!60] (0,-10) arc (-90:-62:10);
+  \node[font=\small] at (2.6,-12.5) {$\theta$};
+  \node[font=\small, left] at ($(0,0)!0.55!(m)$) {$\ell$};
+  % tension and weight
+  \draw[hfAlert, line width=1pt, -{Stealth[length=2.2mm]}] (m) -- ($(m)!11mm!(0,0)$)
+    node[pos=0.8, left=2pt, hf/note, text=hfAlert] {$T$ (unknown)};
+  \draw[hfConcept, line width=1pt, -{Stealth[length=2.2mm]}] (m) -- ++(0,-12)
+    node[below, hf/note, text=hfConcept] {$mg$};
+  \filldraw[fill=hfConcept!15, draw=hfConcept, line width=0.8pt] (m) circle (2.6);
+  \node[font=\small] at (m) {$m$};
+  % axes
+  \draw[black!45, -{Stealth[length=1.8mm]}] (22,-30) -- (30,-30) node[right, hf/note] {$x$};
+  \draw[black!45, -{Stealth[length=1.8mm]}] (22,-30) -- (22,-22) node[above, hf/note] {$y$};
+  % comparison
+  \node[hf/note, anchor=west, align=left, text width=58mm] at (38,-8)
+    {\textbf{Newton:} unknowns $x$, $y$ and $T$; two equations plus the constraint
+     $x^2 + y^2 = \ell^2$; eliminate $T$ by hand.};
+  \node[hf/note, anchor=west, align=left, text width=58mm] at (38,-26)
+    {\textbf{Lagrange:} one coordinate, $\theta$; one equation,
+     $\ddot\theta = -(g/\ell)\sin\theta$; $T$ never appears.};
+\end{tikzpicture}
+\caption{A pendulum. Newton's law needs every force, including the tension of the
+rod, which is unknown. Lagrange's method uses the angle, which the rod allows to change
+freely, and the tension drops out.}\label{fig:pendulum}
+\end{figure}
+
+\section{Lagrange: energy instead of forces}
+
+\begin{history}{1788 \textperiodcentered{} Paris}
+Joseph-Louis Lagrange published the \emph{Mécanique analytique} in 1788. Its
+preface boasts that the book contains no figures: mechanics had become pure
+analysis, operations on equations. The book starts from a principle, not from
+forces: the principle of virtual work, which Jean d'Alembert had extended to bodies in
+motion in 1743. The principle of least action, which Pierre-Louis Maupertuis had
+stated vaguely in 1744 and Leonhard Euler and Lagrange had made precise, comes out of
+it in the book as a consequence.
+\end{history}
+
+Newton and Lagrange looked at the same pendulum and saw different things. Newton saw a
+body driven by forces: list every force, add them up, and the sum gives the
+acceleration. Lagrange saw that, under those same forces, the motion obeys a
+principle: of all the ways the system could go from here to there, it takes the one
+that satisfies a single condition. Newton described the system with the forces, and
+Lagrange described it with the principle. The forces do not vanish in Lagrange's
+version; they are folded into the energies. Define the \emph{Lagrangian} as kinetic
+energy minus potential energy, $L = T - V$. The path the system actually takes is
+the one that makes the \emph{action} $S = \int L\,dt$ stationary.
+
+\begin{concept}{Principle of least action}
+Fix where the system starts and where it ends, and when. Between those two moments it
+could, in imagination, take any path at all. For each imaginable path, add up $T - V$
+along the way; that sum is the action,
+\[
+  S = \int_{t_1}^{t_2} (T - V)\,dt .
+\]
+The path nature actually takes is the one where $S$ is \emph{stationary}: nudge the
+path slightly in any direction and, to first order, $S$ does not change. Usually that
+is a minimum, which is where the word \emph{least} comes from, but strictly it is only
+stationary.
+
+\begin{center}
+\begin{tikzpicture}[x=1mm, y=1mm]
+  \draw[black!45, -{Stealth[length=1.8mm]}] (0,0) -- (62,0) node[right, hf/note] {$t$};
+  \draw[black!45, -{Stealth[length=1.8mm]}] (0,0) -- (0,30) node[above, hf/note] {$q$};
+  \coordinate (A) at (6,6);
+  \coordinate (B) at (54,20);
+  \draw[black!35, dashed, line width=0.6pt] (A) .. controls (20,30) and (35,-4) .. (B);
+  \draw[black!35, dashed, line width=0.6pt] (A) .. controls (18,-6) and (40,34) .. (B);
+  \draw[black!35, dashed, line width=0.6pt] (A) .. controls (30,8) and (34,6) .. (B);
+  \draw[hfConcept, line width=1.2pt] (A) .. controls (22,22) and (38,26) .. (B);
+  \fill[black!70] (A) circle (1) node[above left, hf/note] {start, $t_1$};
+  \fill[black!70] (B) circle (1) node[below right, hf/note] {end, $t_2$};
+  \node[hf/note, text=hfConcept, anchor=south] at (30,25) {the path taken: $S$ stationary};
+  \node[hf/note, anchor=west] at (64,9) {other imaginable paths};
+  \draw[black!35] (63.5,9) -- (45,9.5);
+\end{tikzpicture}
+\end{center}
+
+Pierre-Louis Maupertuis proposed in 1744 that nature always spends the least
+``action'', a vague quantity he partly justified by theology. Euler made it precise the
+same year for a single particle, and Lagrange, in 1760, extended it to any system.
+
+\textbf{What it fixes:} instead of following forces instant by instant, you compare whole
+histories using one number. That number is the same in any coordinates, so you can
+choose the convenient ones, and forces that do no work never appear.
+
+\textbf{What it costs:} it is stated with both ends fixed, as if the system knew where it
+was going. It does not; the Euler--Lagrange equations turn it back into a rule for the
+next instant. And it only applies, in this simple form, to systems that do not lose
+energy to friction.
+\end{concept}
+
+From that one principle come the Euler--Lagrange equations:
+\[
+  \frac{d}{dt}\frac{\partial L}{\partial \dot{q}} - \frac{\partial L}{\partial q} = 0 .
+\]
+Read it as a balance. $\partial L/\partial\dot q$ is how much $L$ depends on the
+velocity; for the usual kinetic energy it is the momentum, and the first term is how
+fast that momentum changes. $\partial L/\partial q$ is how much $L$ depends on the
+position; for the usual potential energy it is the force. The equation says that at
+every instant the two are equal: the momentum changes exactly as fast as the force
+pushes. That is Newton's law again, but $q$ can now be any quantity you like, a
+distance or an angle, and choosing it well is the whole trick. It is an ordinary
+differential equation, one for each coordinate, because the only variable is time.
+
+Nothing in it says the system has to be mechanical. All it needs is a Lagrangian: a
+function of some quantity and of its rate of change, whose integral the system makes
+stationary. In an electric circuit the quantity is the charge on the capacitor. The
+energy in the coil plays the part of kinetic energy, the energy in the capacitor
+plays the part of potential energy, and the same equation gives the circuit's
+equation; Chapter~\ref{ch:hardware} starts from the energy of such a circuit to
+describe a superconducting qubit. For a field, such as the electromagnetic field,
+there is one coordinate at every point of space, the equation becomes a partial
+differential equation, and out come Maxwell's equations. David Hilbert obtained the
+equations of general relativity this way in 1915, and the Standard Model of particle
+physics is written today as a single Lagrangian. What does not fit, in this simple
+form, is friction: a system that loses energy has no action to make stationary.
+
+For the pendulum of Figure~\ref{fig:pendulum}, Lagrange chooses the angle $\theta$
+instead of $x$ and $y$, and two things disappear. The rod's constraint disappears,
+because any angle keeps the bob at distance $\ell$. The tension disappears, because
+it pulls along the rod while the bob moves across it, so it does no work and never
+enters the energies. What is left is a single equation:
+\[
+  \ddot\theta = -\frac{g}{\ell}\sin\theta .
+\]
+For small swings it is the spring's equation, and its solution is again a cosine,
+$\theta(t) = \theta_0\cos\bigl(\sqrt{g/\ell}\,t\bigr)$: the function that says where
+the pendulum is at every moment.
+
+\section{Hamilton: position and momentum}
+
+\begin{history}{1827--1835 \textperiodcentered{} Dublin}
+William Rowan Hamilton was made Astronomer Royal of Ireland in 1827, at 21, while
+still an undergraduate. His first big work was not about mechanics at all but about
+light. In 1827 he read his \emph{Theory of Systems of Rays} to the Royal Irish
+Academy: a whole family of light rays, passing through lenses and mirrors, could be
+described by a single function. Optics already had its own principle of this kind,
+Pierre de Fermat's from 1662: light goes from one point to another along the path
+that takes the least time. Hamilton noticed that mechanics, with Maupertuis's least
+action, had the same shape, and in two papers of 1834 and 1835 he carried his optical
+method over to moving bodies.
+\end{history}
+
+So Hamilton was not fixing a failure of Lagrange. Lagrange's equations solved every
+problem of mechanics that Hamilton's would solve, and in the nineteenth century
+nobody computed an orbit more easily because of him. What Hamilton was after was the
+analogy: one theory for rays of light and for the paths of bodies. Following it, he
+ended up with a different way of writing the state of a system, and that turned out
+to matter more than the analogy itself.
+
+In Lagrange, the unknown is the position $q(t)$, and the velocity is only its
+derivative. To know where the system goes next you need both, so you solve one
+second-order equation. Hamilton promoted the momentum to an unknown of its own,
+with the same standing as the position. The price is twice as many equations; the
+gain is that each one is first-order, and that the pair $(q, p)$ at one instant is
+the whole state of the system, nothing missing.
+
+\begin{concept}{Momentum}
+Momentum is mass times velocity, $p = mv$, and it measures how much motion a body
+carries: a truck and a bicycle at the same speed do not stop the same way. René
+Descartes called it the quantity of motion in 1644, but he multiplied size by speed
+and ignored direction, and his rules for collisions came out wrong. In 1668 and 1669,
+answering a call from the Royal Society, John Wallis, Christopher Wren and Christiaan
+Huygens showed that direction counts: momenta add as arrows, and in a collision their
+total does not change. Newton put it at the center of his second law in 1687: force is
+the rate at which momentum changes.
+
+Since then the idea has stretched far beyond mass times velocity. In Lagrange and
+Hamilton the momentum of a coordinate is $p = \partial L/\partial\dot q$, whatever the
+coordinate is; for an angle it is the angular momentum. Light has no mass and still
+carries momentum, $p = E/c$: James Clerk Maxwell predicted in 1873 that light pushes on
+what it hits, and Pyotr Lebedev measured the push in 1900. In 1924 Louis de Broglie
+went the other way and gave every particle a wave, with a wavelength set by its
+momentum, $\lambda = h/p$. In 1918 Emmy Noether showed what all of these have in
+common: momentum is the quantity that is conserved because the laws of physics are
+the same here as one meter to the left. In quantum mechanics it becomes the operator
+that moves a state through space.
+
+\textbf{What it fixes:} it gives one conserved quantity to follow through any
+collision, and in Hamilton's mechanics it completes the state: position and momentum
+together fix the whole future.
+
+\textbf{What it costs:} the picture of mass times velocity stops working quickly. The
+momentum of an angle has different units, the momentum of light has no mass in it,
+and in quantum mechanics position and momentum can no longer both be sharp.
+\end{concept}
+
+Write $q$ for the coordinate, whatever it is, and $p$ for its momentum,
+$p = \partial L/\partial\dot q$. For a mass on a spring $p = m\dot x$; for a pendulum
+it is the angular momentum $m\ell^2\dot\theta$. Hamilton then built a new function,
+the \emph{Hamiltonian}:
+\[
+  H(q, p) = p\dot{q} - L .
+\]
+Read it this way: the Hamiltonian of $q$ and $p$ is the total energy of the system,
+written as a function of where the system is and how much momentum it carries. The
+Lagrangian is $T - V$, written with position and velocity; the Hamiltonian is
+$T + V$, written with position and momentum. The term $p\dot q$ is only the
+bookkeeping that makes the swap. For the spring, $p\dot x = m\dot x^2 = 2T$, so
+$H = 2T - (T - V) = T + V$. Swapping a variable for a slope in this way is older than
+Hamilton: Adrien-Marie Legendre used it in 1787, and it is called the Legendre
+transform.
+
+The motion becomes two first-order equations, symmetric in $q$ and $p$:
+\[
+  \dot q = \frac{\partial H}{\partial p}, \qquad
+  \dot p = -\frac{\partial H}{\partial q}.
+\]
+The first says the position changes at the rate set by how the energy depends on the
+momentum; for the spring, $\partial H/\partial p = p/m$, which is the velocity. The
+second says the momentum changes at the rate set by how the energy depends on the
+position, with a minus sign; for the spring, $-\partial H/\partial x = -kx$, which is
+the force. The minus sign is what pushes the system downhill in potential energy.
+
+The state of the system is a point $(q, p)$ in \emph{phase space}, and time moves
+that point along a flow. For the spring, $H = p^2/2m + kx^2/2$. Energy is
+conserved, so each trajectory stays on a curve of constant $H$, and for this $H$ the
+curve is an ellipse.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.9]
+  \draw[black!40, -{Stealth[length=2mm]}] (-3.4,0) -- (3.6,0) node[right, font=\sffamily\small, text=black] {$x$};
+  \draw[black!40, -{Stealth[length=2mm]}] (0,-2.6) -- (0,2.8) node[above, font=\sffamily\small, text=black] {$p$};
+  \foreach \r/\c in {0.7/hfConcept, 1.2/hfConcept, 1.7/hfBus, 2.2/hfHistory} {
+    \draw[\c, line width=0.9pt] (0,0) ellipse ({1.35*\r} and {\r});
+  }
+  \draw[hfHistory, line width=0.9pt, -{Stealth[length=2.4mm]}] (0.05,2.2) -- (0.3,2.18);
+  \draw[black!35] (3.05,1.75) -- (2.3,1.45);
+  \node[hf/note, anchor=west] at (3.1,1.75) {higher energy};
+  \draw[black!35] (3.05,-1.75) -- (0.72,-0.5);
+  \node[hf/note, anchor=west] at (3.1,-1.75) {lower energy};
+  \fill[hfHistory] (2.97,0) circle (2.2pt) node[above right, hf/note, text=hfHistory] {(a)};
+  \fill[hfHistory] (0,2.2) circle (2.2pt) node[above left, hf/note, text=hfHistory] {(b)};
+  \fill[hfHistory] (-2.97,0) circle (2.2pt) node[above left, hf/note, text=hfHistory] {(c)};
+\end{tikzpicture}
+\caption{Phase space of the harmonic oscillator. Each ellipse is one trajectory,
+at one fixed energy, and the system goes around its ellipse forever, clockwise. The
+points (a), (b) and (c) are the three moments of Figure~\ref{fig:spring}: stretched
+and at rest, passing the rest position at full speed, compressed and at
+rest.}\label{fig:phase}
+\end{figure}
+
+\begin{reflection}{Is a point of this diagram an energy, or a rate of change?}
+Neither. A point of the diagram is a state: one position and one momentum at the
+same instant. The point (a) is the spring stretched with the mass at rest; the point
+(b) is the mass passing the rest position at full speed.
+
+The energy is not on either axis. It is a number attached to each point, $H(x, p)$,
+the way altitude is attached to each point of a map, and the ellipses are the
+contour lines of that map. Every point on one ellipse has the same energy, and points
+on bigger ellipses have more. At (a) all of it is potential energy, because $p = 0$;
+at (b) all of it is kinetic, because $x = 0$; in between it is shared, and the sum
+stays the same.
+
+The rate of change is a third thing: how fast, and in which direction, the point
+moves. Hamilton's equations give it, $\dot x = \partial H/\partial p$ and
+$\dot p = -\partial H/\partial x$, and those are the slopes of the energy map turned
+by a right angle. Someone who always walks at right angles to the slope of a hill
+follows a contour line and never climbs or descends; that is why the system stays on
+its ellipse. So the energy is not the rate of change. The energy is the height of the
+map, and the rate of change comes from how steep the map is.
+\end{reflection}
+
+Hamilton's form has one more piece that matters later. For any two quantities
+$f$ and $g$ of the system, define the \emph{Poisson bracket}, introduced by
+Siméon Denis Poisson in 1809:
+\[
+  \{f, g\} = \frac{\partial f}{\partial q}\frac{\partial g}{\partial p}
+           - \frac{\partial f}{\partial p}\frac{\partial g}{\partial q}.
+\]
+Then the time evolution of any quantity is $\dot f = \{f, H\}$, and position and
+momentum satisfy $\{q, p\} = 1$.
+
+What the new form bought was structure, and it paid off over the next ninety years.
+Conserved quantities show up on sight: if $H$ does not depend on some $q$, then
+$\dot p = -\partial H/\partial q = 0$ and that momentum never changes. Carl Jacobi took
+the method up in 1837 and made it the standard tool of celestial mechanics. The flow
+in phase space keeps areas fixed, a fact that goes back to Joseph Liouville in 1838,
+and Josiah Willard Gibbs built statistical mechanics on it in 1902. In 1926 Erwin
+Schrödinger followed Hamilton's own analogy one step further: if the paths of bodies
+are to mechanics what rays are to optics, and rays are only an approximation to light
+waves, then there should be waves behind the paths of bodies too. And the Poisson
+bracket is what Dirac would turn into the quantum commutator.
+
+\begin{question}{What are quaternions, and why do they come up with Hamilton?}
+Hamilton is as famous for quaternions as for mechanics. Complex numbers, $a + bi$,
+describe rotations in the plane: multiplying by $i$ turns a point by $90^\circ$.
+Hamilton spent years looking for numbers that would do the same for rotations in
+space. On 16 October 1843, walking with his wife along the Royal Canal in Dublin, he
+saw that it needed three imaginary units, not two, and carved the rule into the stone
+of Broom Bridge:
+\[
+  i^2 = j^2 = k^2 = ijk = -1 .
+\]
+The carving is gone; a plaque marks the place. A quaternion is
+$a + bi + cj + dk$, and it does not commute: $ij = k$ but $ji = -k$. It was the first
+system of numbers in which the order of a product matters, more than eighty years
+before Heisenberg's $xp \neq px$.
+
+They come up in this book for a precise reason. Quaternions of length one describe
+every rotation in space, and Chapter~\ref{ch:state} shows that every gate on one
+qubit is a rotation of the Bloch sphere. The Pauli matrices, multiplied by $-i$,
+obey exactly Hamilton's rule. A single-qubit gate is, up to a phase, a unit
+quaternion. That is also why video games and spacecraft use quaternions to store
+orientations.
+\end{question}
+
+\section{The bridge}
+
+\begin{history}{1925 \textperiodcentered{} Cambridge}
+In the autumn of 1925, Paul Dirac, a 23-year-old research student, was reading
+Heisenberg's new paper, in which physical quantities no longer commuted: $xp$ was
+not equal to $px$. On a Sunday walk he remembered something about Poisson
+brackets, but not the details. The libraries were closed, so he waited
+impatiently until Monday morning to check. The bracket had the same algebraic
+structure as Heisenberg's commutator.
+\end{history}
+
+Dirac's rule, now called \emph{canonical quantization}, is a translation table:
+
+\begin{center}
+\begin{tabular}{ll}
+\hline
+classical & quantum \\
+\hline
+quantities $q$, $p$ & operators $\hat q$, $\hat p$ \\
+$\{q, p\} = 1$ & $[\hat q, \hat p] = \hat q\hat p - \hat p\hat q = i\hbar$ \\
+$\dot f = \{f, H\}$ & $i\hbar\,\dot{\hat A} = [\hat A, \hat H]$ \\
+Hamiltonian $H(q, p)$ & Hamiltonian operator $\hat H(\hat q, \hat p)$ \\
+\hline
+\end{tabular}
+\end{center}
+
+The geometry of phase space does not survive quantization; there are no more
+trajectories. The algebra does. The rule is not rigorous for every system, but it
+works for every system in this book.
+
+\begin{concept}{The Hamiltonian}
+The function, and later the operator, that gives the total energy of a system and
+generates its evolution in time.
+
+\textbf{What it fixes:} it puts all the dynamics of a system into a single object,
+in a form that survives the move from classical to quantum.
+
+\textbf{What it costs:} you have to know the energy of every interaction in the
+system, and for a molecule that is already most of the problem.
+\end{concept}
+
+This is why the Hamiltonian is everywhere in quantum algorithms. Hamiltonian
+simulation implements $e^{-i\hat H t}$ as a circuit, which is Feynman's original
+proposal. Phase estimation extracts the eigenvalues of $\hat H$, which are energies.
+Variational algorithms look for the state that minimizes the energy
+$\bra{\psi}\hat H\ket{\psi}$. Without the road from Newton to Hamilton, none of
+these makes sense.

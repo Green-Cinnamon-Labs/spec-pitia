@@ -4,7 +4,7 @@ O método é o mesmo da linha Hefesto ([`spec-hefesto/WORKFLOW.md`](https://gith
 
 ## Papéis
 
-- **Eu escrevo os notebooks, o código e o livro.** O Claude não edita nem commita notebooks (`nucleo/`, `digressoes/`, `matematica/`, `revisando/`), nem `codigo/`, nem `praticas/`.
+- **Eu escrevo o código e o livro.** O Claude não edita nem commita `praticas/`.
 - **O Claude guia.** Nas práticas, por versão: "o que está assim hoje → mude para → por quê (1 a 3 linhas)", e como conferir. Nas leituras, ajuda a ler o artigo e a checar as fontes.
 - O Claude pode escrever e commitar documentação do hub (README, WORKFLOW, `referencias/papers.md`).
 
@@ -18,7 +18,7 @@ Todas ficam neste hub e no [board](https://github.com/orgs/Green-Cinnamon-Labs/p
 
 ## Livro
 
-LaTeX em [`book/`](book/), uma parte por camada: problema, algoritmo, correção de erros, hardware e mercado. Os fundamentos dos notebooks entram como capítulos da parte de algoritmo. Os notebooks continuam no repositório como o lado executável.
+LaTeX em [`book/`](book/). Abre com uma parte de fundamentos, que começa por Feynman, e depois tem uma parte por camada: problemas, algoritmo, hardware, correção de erros e mercado. O livro não tem código do projeto: o lado executável fica nas práticas.
 
 ## GitHub Flow
 
@@ -37,7 +37,7 @@ Ficam todos lado a lado em `C:\Projetos\gclabs\`, e o workspace é o [`pitia.cod
 
 | Pasta | O que é |
 | --- | --- |
-| `spec-pitia` | este hub: os notebooks, o livro, as issues e este fluxo |
+| `spec-pitia` | este hub: o livro, as referências, as issues e este fluxo |
 
 Quando surgir um repositório novo da linha:
 

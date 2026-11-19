@@ -1,0 +1,169 @@
+\chapter{Why You Can Compute with a Qubit}\label{ch:qubit}
+
+\begin{etymology}
+\textbf{Abstraction} comes from the Latin \emph{abstrahere}: \emph{ab-},
+``away'', and \emph{trahere}, ``to pull''. To abstract is to pull something out
+of its context and keep only what matters from one point of view.
+
+\textbf{Superposition} comes from \emph{superponere}: \emph{super-}, ``on top
+of'', and \emph{ponere}, ``to put''. Things put on top of each other, occupying
+the same place and adding up into one whole.
+\end{etymology}
+
+The whole chapter unpacks one sentence:
+
+\begin{quote}
+You can compute with qubits because you can encode the candidate answers of a
+problem in a superposition, and then apply unitary operations that make the
+amplitudes interfere, so that the right answer is favored when you measure.
+\end{quote}
+
+Five ideas are in that sentence: the qubit, superposition, interference, unitary
+operations and encoding. This chapter takes them one at a time, with as little
+mathematics as possible. The next chapters bring the mathematics back.
+
+\section{A qubit is an abstraction}
+
+A qubit is a device with two distinguishable states, which we call $\ket{0}$ and
+$\ket{1}$. That is the only thing it shares with a bit. A bit is always one of the
+two. A qubit can be in a combination of both, written
+\[
+  \alpha\ket{0} + \beta\ket{1}.
+\]
+The numbers $\alpha$ and $\beta$ are \emph{amplitudes}. They are not
+probabilities, but they produce them: when you measure, you get $0$ with
+probability $|\alpha|^2$ and $1$ with probability $|\beta|^2$, and the two have to
+add up to 1.
+
+The usual picture is a coin. On the table, it shows heads or tails. In the air,
+you could say it is ``both''. Suppose the coin is weighted so that its state in the
+air is $0.866\ket{\text{heads}} + 0.5\ket{\text{tails}}$. Then
+$0.866^2 = 0.75$ and $0.5^2 = 0.25$: three times out of four it lands heads. Throw
+it a thousand times and the fraction of heads settles near 75\%.
+
+\section{Superposition is not speed}
+
+The coin is a bad picture, and it is worth saying why. A spinning coin is always
+either heads or tails at each instant; we just cannot follow it. That is
+ignorance, and ignorance is described by ordinary probabilities. A qubit in
+superposition is not secretly one of the two. Both components are present at the
+same time, and, unlike probabilities, they can cancel each other.
+
+A better image is two waves added together. Take one oscillation and another with
+a different frequency, and add them: you get a single wave. Neither of the
+originals can be seen in it, but both are in there. This is still an analogy (a
+qubit is not a wave in space), so use it only to hold the idea of coexistence.
+
+\section{Interference}
+
+Here is the mechanism, in three steps, with the operation every textbook uses
+first. The \emph{Hadamard} operation $H$ acts like this:
+\[
+  H\ket{0} = \frac{\ket{0} + \ket{1}}{\sqrt{2}}, \qquad
+  H\ket{1} = \frac{\ket{0} - \ket{1}}{\sqrt{2}}.
+\]
+Start from $\ket{0}$ and apply $H$: you get an even superposition, 50/50. Now
+flip the sign of the $\ket{1}$ component (a \emph{phase flip}, called $Z$). The
+state becomes $(\ket{0} - \ket{1})/\sqrt{2}$. Measure now and you still get 50/50,
+because a sign does not change the size of an amplitude. Then apply $H$ again. The
+result is $\ket{1}$, with certainty.
+
+Without the phase flip, the same recombination gives $\ket{0}$ with certainty.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=5mm, y=11mm, font=\sffamily\scriptsize]
+  \foreach \px/\title/\a/\b in {0/{after $H$}/0.707/0.707, 9/{after the flip}/0.707/-0.707, 18/{after $H$ again}/0/1} {
+    \draw[black!40] (\px-0.5,0) -- (\px+5.5,0);
+    \fill[hfConcept!70] (\px+0.5,0) rectangle (\px+2,\a);
+    \fill[hfHistory!80] (\px+3,0) rectangle (\px+4.5,\b);
+    \node[below] at (\px+1.25,{min(0,\a)}) {$\ket{0}$};
+    \node[below] at (\px+3.75,{min(0,\b)}) {$\ket{1}$};
+    \node[above, font=\sffamily\small] at (\px+2.5,1.25) {\title};
+  }
+  \node[hf/note] at (2.5,-1.25) {50\% / 50\%};
+  \node[hf/note] at (11.5,-1.25) {50\% / 50\%};
+  \node[hf/note] at (20.5,-1.25) {0\% / 100\%};
+\end{tikzpicture}
+\caption{Amplitudes, not probabilities. Flipping the sign of $\ket{1}$ leaves the
+probabilities at 50/50, but the second $H$ turns that sign into a certain answer.}
+\end{figure}
+
+Why does the sign decide the outcome? Because $H$ adds and subtracts. Applied to
+$a\ket{0} + b\ket{1}$, it gives
+\[
+  \frac{a + b}{\sqrt{2}}\ket{0} + \frac{a - b}{\sqrt{2}}\ket{1}.
+\]
+When $a$ and $b$ have the same sign, they pile up on $\ket{0}$ and cancel on
+$\ket{1}$. When the signs are opposite, the reverse happens. The total
+probability is conserved; it is only moved around. This is \emph{interference},
+and it is the engine of every quantum algorithm: mark the right answer with a sign
+the measurement cannot see, then recombine so the sign turns into probability.
+
+\begin{concept}{Interference}
+Amplitudes add like signed (in general, complex) numbers before they become
+probabilities. Equal signs reinforce; opposite signs cancel.
+
+\textbf{What it fixes:} an algorithm can steer probability toward the right
+answer without ever looking at the intermediate state.
+
+\textbf{What it costs:} the phases must survive the whole computation. Any
+contact with the environment scrambles them, and the interference is gone. This
+is the reason qubits are so hard to build (Part~\ref{part:hardware}).
+\end{concept}
+
+The hard question is how to flip the sign of the right answer without knowing it
+in advance. That is what an oracle does, and Chapter~\ref{ch:encoding} returns
+to it.
+
+\section{Unitary operations}
+
+$H$ and $Z$ are \emph{unitary} operations. For now, two of their properties
+matter. They act on all the components of the superposition at once. And they
+are reversible: nothing is thrown away, so you can always undo them. They have to
+be. An operation that destroyed information along the way would destroy
+amplitudes, and there would be nothing left to interfere. The conservation you
+saw above, where 50/50 became 0/100 and the total stayed at 1, is a consequence.
+Chapter~\ref{ch:state} says exactly what unitary means.
+
+\section{Encoding}
+
+In the coin, the candidate answers were heads and tails, the two states of the
+qubit. A real problem needs more room. One qubit holds 2 candidates, two qubits
+hold 4, three hold 8, and $n$ qubits hold $2^n$. Encoding means mapping the
+candidates of your problem onto those states, so that all of them can be put into
+superposition and take part in the interference. Chapter~\ref{ch:encoding} shows
+how it is done for a real problem.
+
+\section{How much does that buy?}
+
+Grover's search finds one marked item among $N = 2^n$ in about $\sqrt{N}$ steps.
+A classical machine has to check items one by one; give it 24 cores and it checks
+24 at a time.
+
+\begin{center}
+\begin{tabular}{rrrrr}
+\hline
+qubits $n$ & candidates $2^n$ & 24 cores, $N/24$ & Grover, $\sqrt{N}$ & ratio \\
+\hline
+10 & $1.0 \times 10^{3}$ & 43 & 32 & 1.3 \\
+20 & $1.0 \times 10^{6}$ & $4.4 \times 10^{4}$ & $1.0 \times 10^{3}$ & 43 \\
+30 & $1.1 \times 10^{9}$ & $4.5 \times 10^{7}$ & $3.3 \times 10^{4}$ & $1.4 \times 10^{3}$ \\
+40 & $1.1 \times 10^{12}$ & $4.6 \times 10^{10}$ & $1.0 \times 10^{6}$ & $4.4 \times 10^{4}$ \\
+50 & $1.1 \times 10^{15}$ & $4.7 \times 10^{13}$ & $3.4 \times 10^{7}$ & $1.4 \times 10^{6}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Each extra qubit doubles the classical work and multiplies the quantum work by
+only $\sqrt{2}$, so the ratio keeps growing.
+
+The table is also misleading, and you should know how. It compares
+\emph{steps}, and a step is not the same thing on both sides. A classical core
+checks a candidate in nanoseconds. A Grover step on an error-corrected machine is
+a long sequence of logical gates, each of which costs many physical operations
+and microseconds of time. In 2021, Ryan Babbush and colleagues at Google worked out
+that, with realistic error-correction overheads, a quadratic speedup will not beat
+a classical machine on the first generations of fault-tolerant hardware. Square-root
+speedups are real, but they are the weakest argument for building quantum
+computers.

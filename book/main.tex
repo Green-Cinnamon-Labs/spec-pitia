@@ -25,14 +25,36 @@
 \frontmatter
 \maketitle
 \tableofcontents
+\include{chapters/00-how-to-read}
 
 \mainmatter
 
-% One part per layer of the stack, from the problem down to the market.
-\part{The Problem}
-\part{The Algorithm}
-\part{Error Correction}
-\part{Hardware}
-\part{The Market}
+% The foundations first, starting with Feynman.
+\part{Foundations}\label{part:foundations}
+\include{chapters/01-a-short-history}
+\include{chapters/02-what-a-computer-can-do}
+\include{chapters/03-computing-with-a-qubit}
+\include{chapters/04-newton-to-hamilton}
+\include{chapters/05-planck-to-dirac}
+\include{chapters/06-vectors-and-hilbert-space}
+\include{chapters/07-state-unitaries-measurement}
+\include{chapters/08-matrices-eigenvalues-tensors}
+
+% Then one part per layer of the stack, from the problems down to the market.
+\part{The Problems}\label{part:problems}
+\include{chapters/09-undoing-a-multiplication}
+
+\part{The Algorithm}\label{part:algorithm}
+\include{chapters/10-encoding-a-problem}
+\include{chapters/11-fourier-to-qft}
+
+\part{Hardware}\label{part:hardware}
+\include{chapters/12-what-a-qubit-is-made-of}
+\include{chapters/13-a-bit-that-lasts}
+
+\part{Error Correction}\label{part:qec}
+\include{chapters/14-correcting-what-you-cannot-copy}
+
+\part{The Market}\label{part:market}
 
 \end{document}

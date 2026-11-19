@@ -4,19 +4,31 @@
 \RequirePackage{xcolor}
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds,decorations.pathreplacing,decorations.pathmorphing}
+\RequirePackage{array}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
 \RequirePackage[font=small,labelfont={bf,sf},textfont=sf,skip=8pt]{caption}
 
 % ---------------------------------------------------------------------------
 % Palette
-%   Boxes:    amber = a story (who, when, what forced it)
-%             blue  = a key concept (what it is, what it costs)
+%   Boxes:    amber  = a story (who, when, what forced it)
+%             blue   = a key concept (what it is, what it costs)
+%             teal   = a dumb question, and its answer
+%             purple = a reflection on something that should bother you
+%             gray   = where the words come from
 %   Diagrams: each color is a role, the same in every figure.
 % ---------------------------------------------------------------------------
 \definecolor{hfHistory}{HTML}{B4580A}
 \definecolor{hfHistoryBg}{HTML}{FDF4E7}
 \definecolor{hfConcept}{HTML}{1F5FA8}
 \definecolor{hfConceptBg}{HTML}{EAF2FB}
+\definecolor{hfQuestion}{HTML}{0F766E}
+\definecolor{hfQuestionBg}{HTML}{E6F4F1}
+\definecolor{hfReflect}{HTML}{7B3FA0}
+\definecolor{hfReflectBg}{HTML}{F4EEF9}
+\definecolor{hfWord}{HTML}{6B7280}
+\definecolor{hfWordBg}{HTML}{F4F4F5}
 
 \definecolor{hfSource}{HTML}{4A4A4A}  % the plant, a device, a data source
 \definecolor{hfReader}{HTML}{1F5FA8}  % programs that read: clients, screens
@@ -39,18 +51,78 @@
 % paragraphs inside boxes: no indent, a small gap
 \newcommand\hf@paras{\setlength{\parindent}{0pt}\setlength{\parskip}{0.45em}}
 
-% \begin{history}{1968 · Detroit} ... \end{history}
-\newtcolorbox{history}[1]{
+% A box may only split across pages when at least 40% of it stays on the
+% first page. Each box is measured first; if less than 40% of its height is
+% left on the page, it starts on the next one.
+% The test is done by hand rather than with \needspace: needspace leaves a
+% \penalty-100 behind, and with \raggedbottom TeX then prefers to break the
+% page right there even when the whole box would fit.
+\raggedbottom
+\newsavebox\hf@measure
+\newlength\hf@need
+\newlength\hf@left
+\newcommand\hf@needspace[1]{\par
+  \setlength\hf@left{\pagegoal}\addtolength\hf@left{-\pagetotal}%
+  \ifdim #1>\hf@left \ifdim\hf@left>\z@ \newpage\fi\fi}
+% #1 = box environment, #2 = title, #3 = body
+\newcommand\hf@keeptogether[3]{%
+  \sbox\hf@measure{\parbox{\linewidth}{%
+    \begin{#1}[unbreakable]{#2}#3\end{#1}}}%
+  \setlength\hf@need{\ht\hf@measure}%
+  \addtolength\hf@need{\dp\hf@measure}%
+  \setlength\hf@need{0.4\hf@need}%
+  \hf@needspace{\hf@need}%
+  \begin{#1}{#2}#3\end{#1}}
+
+% \begin{history}{1900 · Berlin} ... \end{history}
+\NewDocumentEnvironment{history}{m +b}
+  {\hf@keeptogether{hf@history}{#1}{#2}}{}
+\newtcolorbox{hf@history}[2][]{
   hf/box, colback=hfHistoryBg, colframe=hfHistory,
   before upper={\hf@paras{\sffamily\bfseries\footnotesize\color{hfHistory}%
-    HISTORY\enspace\textperiodcentered\enspace #1}\par\smallskip},
+    HISTORY\enspace\textperiodcentered\enspace #2}\par\smallskip},
+  #1,
 }
 
-% \begin{concept}{Polling} ... \end{concept}
-\newtcolorbox{concept}[1]{
+% \begin{concept}{Interference} ... \end{concept}
+\NewDocumentEnvironment{concept}{m +b}
+  {\hf@keeptogether{hf@concept}{#1}{#2}}{}
+\newtcolorbox{hf@concept}[2][]{
   hf/box, colback=hfConceptBg, colframe=hfConcept,
   before upper={\hf@paras{\sffamily\bfseries\footnotesize\color{hfConcept}%
-    KEY CONCEPT\enspace\textperiodcentered\enspace #1}\par\smallskip},
+    KEY CONCEPT\enspace\textperiodcentered\enspace #2}\par\smallskip},
+  #1,
+}
+
+% \begin{question}{If a qubit holds both answers, why can't I read both?} ... \end{question}
+%   the question a reader is embarrassed to ask, and its answer
+\NewDocumentEnvironment{question}{m +b}
+  {\hf@keeptogether{hf@question}{#1}{#2}}{}
+\newtcolorbox{hf@question}[2][]{
+  hf/box, colback=hfQuestionBg, colframe=hfQuestion,
+  before upper={\hf@paras{\sffamily\bfseries\footnotesize\color{hfQuestion}%
+    DUMB QUESTION}\par\smallskip
+    {\large\bfseries\color{hfQuestion}#2}\par\medskip},
+  #1,
+}
+
+% \begin{reflection}{The energy of a whole circuit comes in steps?} ... \end{reflection}
+%   a pause on something that should bother you, and why it is true
+\NewDocumentEnvironment{reflection}{m +b}
+  {\hf@keeptogether{hf@reflection}{#1}{#2}}{}
+\newtcolorbox{hf@reflection}[2][]{
+  hf/box, colback=hfReflectBg, colframe=hfReflect,
+  before upper={\hf@paras{\sffamily\bfseries\footnotesize\color{hfReflect}%
+    REFLECTION}\par\smallskip
+    {\large\bfseries\color{hfReflect}#2}\par\medskip},
+  #1,
+}
+
+% \begin{etymology} ... \end{etymology}   where the words come from
+\newtcolorbox{etymology}{
+  hf/box, colback=hfWordBg, colframe=hfWord, fontupper=\small,
+  before upper={\hf@paras{\sffamily\bfseries\footnotesize\color{hfWord}%
+    WHERE THE WORDS COME FROM}\par\smallskip},
 }
 
 % ---------------------------------------------------------------------------

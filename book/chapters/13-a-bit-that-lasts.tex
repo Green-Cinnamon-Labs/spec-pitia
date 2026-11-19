@@ -1,0 +1,259 @@
+\chapter{A Bit That Lasts Twenty Seconds}\label{ch:majorana}
+
+\begin{etymology}
+\textbf{Topology} comes from the Greek \emph{tópos}, ``place'', and \emph{lógos},
+``study''. It is the part of mathematics that studies what does not change when a
+shape is stretched or bent without tearing: a coffee mug and a doughnut have one
+hole each, and no small push can change that number.
+
+\textbf{Parity} comes from the Latin \emph{paritas}, ``equality'', from \emph{par},
+``equal''. In arithmetic it says whether a number is even or odd. Here it says whether
+a fermion mode is empty or full.
+\end{etymology}
+
+\section*{Before this chapter}
+
+This chapter is the story of a claim, and it does not stop to explain the physics
+behind it. That is done in two earlier sections, and without them most of what follows
+will be hard to follow:
+
+\begin{itemize}
+\item Section~\ref{sec:identical}, on identical particles: what bosons, fermions and
+anyons are, and why exchanging two particles can apply a gate.
+\item Section~\ref{sec:topological}, on topological qubits: the superconducting gap and
+quasiparticles, the Majorana zero mode and its parity, the recipe for the wire, the
+tetron, and how a parity is read through a quantum dot.
+\end{itemize}
+
+It also uses the $X$ and $Z$ of Chapter~\ref{ch:state} and the Gottesman--Knill theorem
+of Chapter~\ref{ch:hardware}.
+
+\bigskip
+
+On 16 November 2026 Microsoft posted an eight-minute video called \emph{Majorana 2
+Explained: The road to 1000x improvement}. In it, the people behind the company's
+quantum chip say that its qubits became a thousand times more stable in one year,
+that one operation now fits tens of millions of times inside the life of a qubit,
+and that a useful machine is coming in 2029. Chapter~\ref{ch:hardware} explained how
+the device is supposed to work, and ended its checklist with ``not shown''. This
+chapter follows the bet from its start, in 1937, to the video, and then reads the
+video against the paper behind it.
+
+\section{A particle that is its own antiparticle}
+
+\begin{history}{1937 \textperiodcentered{} Rome and Naples}
+Ettore Majorana, a Sicilian physicist from Enrico Fermi's group in Rome, found a
+version of Dirac's equation whose solutions are their own antiparticles: a particle
+and its mirror image are the same object. He had the result for years and did not
+publish it. He brought it out in \emph{Il Nuovo Cimento} in 1937, when colleagues
+convinced him to compete for a professorship, and was appointed at Naples for his
+reputation alone. On 25 March 1938 he took a boat from Palermo to Naples and was
+never seen again. His body was never found.
+\end{history}
+
+Whether any elementary particle is a Majorana fermion is still open; the neutrino is
+the candidate, and experiments are still looking. The story of this chapter is about
+something else with the same name: the half-electron, half-hole excitations at the ends
+of a superconducting wire, which are their own antiparticles in the sense of
+Section~\ref{sec:topological}.
+
+\section{Kitaev's idea}
+
+\begin{history}{1997 \textperiodcentered{} Landau Institute, Moscow}
+Alexei Kitaev, the same Kitaev of phase estimation (Chapter~\ref{ch:fourier}), and of the
+surface codes of Chapter~\ref{ch:qec}, posted \emph{Fault-tolerant quantum computation
+by anyons} in July 1997. His proposal: store qubits in non-abelian anyons, whose shared
+state depends only on how they were wound around each other, the topology of their
+paths. Moving one around another applies a gate, and the gate is exact as long as the
+winding is right, however shaky the hand that did it.
+\end{history}
+
+In October 2000, by then also affiliated with Microsoft Research, Kitaev wrote down the
+wire model of Section~\ref{sec:topological}, with one Majorana zero mode at each end. The
+promise attracted Microsoft early. By 2006 the company had a group at the University of
+California, Santa Barbara, led by the Fields medalist Michael Freedman, devoted to
+topological quantum computing. When the people in the 2026 video say ``we've worked on
+topological quantum computing for 20 years'', this is the start they mean.
+
+\section{The peak}
+
+In 2010 two groups published the recipe of Section~\ref{sec:topological}: a semiconductor
+nanowire, a superconducting coat and a magnetic field. Experimenters started right away.
+
+\begin{history}{2012 \textperiodcentered{} Delft}
+Vincent Mourik, Leo Kouwenhoven and colleagues followed the recipe with indium antimonide
+wires and a superconducting contact. They sent current into the end of the wire and saw a
+peak of conductance at exactly zero voltage, staying put as they changed the field and the
+gate voltages. A Majorana mode at the end of a wire should produce exactly that peak. The
+paper appeared in \emph{Science} and started a race.
+\end{history}
+
+The trouble is that the Andreev bound states of Section~\ref{sec:topological} produce the
+same peak with no topology at all. The following decade was spent trying to tell the two
+apart, and most of what follows in this chapter is that same argument, at higher and higher
+stakes.
+
+\section{The retraction}
+
+\begin{history}{2018--2021 \textperiodcentered{} Delft}
+In 2018 Kouwenhoven's group, partly funded by Microsoft, published \emph{Quantized Majorana
+conductance} in \emph{Nature}: the zero-voltage peak had reached the exact height theory
+predicts for a Majorana mode, $2e^2/h$. Sergey Frolov and Vincent Mourik, who had worked on
+the 2012 paper, asked for the raw data and found that data contradicting the claim had been
+left out. On 8 March 2021 the authors retracted the paper. After a new calibration the
+plateaus sat 8\% higher than the quantized value, and the authors wrote that they could no
+longer claim the observation. An investigation commissioned by Delft found no fabrication,
+but found some selection in what had been published.
+\end{history}
+
+The retraction did not end the program. It changed its strategy. Microsoft moved most of
+the work in house and replaced the single zero-voltage peak with a battery of measurements.
+
+\section{Majorana 1}
+
+In 2022 Microsoft posted the \emph{topological gap protocol}, published in \emph{Physical
+Review B} in 2023: a sequence of transport measurements on both ends of a wire that, the
+company says, certifies that a region of magnetic field and gate voltage is in the
+topological phase. Only devices that pass the protocol move on to the qubit experiments.
+
+On 19 February 2025 Microsoft announced \emph{Majorana 1}, a chip with eight qubits and,
+according to the company, a path to a million. The same day \emph{Nature} published a
+paper with the measurement behind it: a single-shot measurement of the parity of a wire,
+read through a quantum dot whose capacitance changes with the parity. The paper did not
+claim the announcement. The editors added a note to the peer review file saying that the
+results ``do not represent evidence for the presence of Majorana zero modes in the reported
+devices'', and that the paper was published for its device architecture. The press release
+said the topological qubit had arrived. The paper said a parity had been read.
+
+Henry Legg, at the University of St Andrews, posted two comments within a month. In the
+first he argued that the topological gap protocol has no consistent definition of
+``gap'' or of ``topological'', and that its verdict changes with the ranges of field,
+voltage and resolution chosen for the analysis. In the second he showed that the same
+protocol can classify the regions where the 2025 parity readout was done as either gapped
+or gapless.
+
+A qubit needs both loops of the tetron in Figure~\ref{fig:tetron}, because a bit that can
+only be read in $Z$ is a classical bit. In July 2025 Microsoft posted the first measurement
+of both on one device. The $Z$ parity switched about every $12.4$~ms. The $X$ parity
+switched about every $14.5\,\mu$s, almost a thousand times faster, and its readout was wrong
+16\% of the time.
+
+\section{Majorana 2}\label{sec:majorana2}
+
+On 2 June 2026 Microsoft announced \emph{Majorana 2} and posted the paper behind it, with 165
+authors: \emph{20 Second Parity Lifetime in an InAs--Pb Tetron Device}. Three things changed
+at once. The superconductor went from aluminum to lead, whose gap is about eight times larger.
+The semiconductor went from indium arsenide to a stack of indium arsenide and indium arsenide
+antimonide. And the way the device is tuned changed to a radio-frequency method precise to
+about a microelectronvolt. The topological gap that the company reports rose from about 30 to
+about $70\,\mu$eV.
+
+The headline number is the $Z$ parity: it now switches on average every $22 \pm 1$~s, some
+dwell times reach minutes, against 1 to 12~ms in the aluminum devices. That is where the
+``1000x'' comes from; against the 12~ms device the ratio is 1833, and against the 1~ms device
+it is 22\,000. The paper is a preprint. In November 2026 it had not been through peer review.
+
+\begin{reflection}{A gap twice as large gives a lifetime a thousand times longer?}
+The video says so directly: the material improved ``by a multiple of a few, two to three'',
+and that turned into a factor of a thousand. It sounds like an exaggeration, and it is the
+most ordinary part of the story.
+
+The $Z$ parity flips when something supplies enough energy to cross the gap. Thermal
+processes of that kind have a rate proportional to $e^{-\Delta/k_B T}$, with $\Delta$ the gap
+and $T$ the temperature of whatever is causing the flips. Going from $\Delta = 30$ to
+$70\,\mu$eV multiplies the lifetime by $e^{40\,\mu\mathrm{eV}/k_B T}$. For that factor to be
+1000, $40\,\mu\mathrm{eV}/k_B T = \ln 1000 \approx 6.9$, which gives $k_B T \approx
+5.8\,\mu$eV, or $T \approx 67$~mK. A dilution refrigerator sits at about 15~mK, and the stray
+excitations in the device are usually hotter than the refrigerator. Sixty-seven millikelvin is
+a reasonable number for them.
+
+So a factor of two in an exponent gives a factor of a thousand outside it. That is the same
+arithmetic that makes the Boltzmann factor in Chapter~\ref{ch:hardware} drop from a coin toss
+at 300~K to almost nothing at 15~mK. The thousand is real. What it measures is the next
+question.
+\end{reflection}
+
+Three weeks later, on 24 June 2026, \emph{Nature} published Legg's critique of the 2025 paper
+as a \emph{Matters Arising}, with Microsoft's reply in the same issue. Legg had gone through
+the code of the topological gap protocol, which Microsoft had made public. A plotting filter
+was hard-coded to show only the largest region that passed the protocol, hiding a second one;
+and the code flipped the bias voltage by position in an array rather than by its physical
+value. With those fixed, he got different results from the same measurements, and he wrote
+that the coding errors had led to incorrect statements to the peer reviewers. Microsoft
+called it ``a minor off-by-one-pixel bug'', said that the protocol is only a tuning step with
+no role in interpreting the qubit measurements, and said that Legg offered no alternative
+physical model that reproduces their capacitance signal. On Majorana 2, Legg told \emph{The
+Register} that it ``is not proven to even be a single qubit''.
+
+The theorists answered too. In August 2026 Binayyak Roy, Jay Sau and Sumanta Tewari showed
+that a short segment of the wire in the ordinary, non-topological state can produce the same
+flux-dependent capacitance signal that Microsoft reads as the signature of Majorana modes, and
+proposed a test to tell them apart. Jay Sau is a coauthor of the 2010 recipe. The people who
+invented the platform are among the ones asking for more evidence.
+
+\section{What the video says}
+
+\begin{question}{Is a twenty-second qubit better than a millisecond transmon?}
+It is not a twenty-second qubit. It is a twenty-second bit. The number measures how long the
+$Z$ parity stays put, which is how long a classical 0 or 1 survives without an outside
+electron jumping in. A qubit also has to keep its $X$ value, which is where the phase lives,
+and Majorana 2 does not report $X$. The transmon's millisecond in Chapter~\ref{ch:hardware} is
+measured on a working qubit with gates. The two numbers are not about the same thing.
+\end{question}
+
+The video does its arithmetic in a single sentence: with an operation every microsecond and a
+qubit that lives a millisecond, there is one error every thousand operations; with tens of
+seconds, ``you can do tens of millions of operations before an error''. With the measured
+numbers and the same yardstick of one microsecond per operation:
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{llrr}
+\hline
+device & parity & lifetime & operations per lifetime \\
+\hline
+aluminum tetron (2025) & $Z$ & 12.4 ms & 12\,400 \\
+aluminum tetron (2025) & $X$ & 14.5\,$\mu$s & about 15 \\
+lead tetron (2026) & $Z$ & 22 s & $2 \times 10^7$ \\
+lead tetron (2026) & $X$ & not reported & -- \\
+\hline
+\end{tabular}
+\end{center}
+
+The tens of millions are real for $Z$. The last time anyone published $X$, the same sentence
+would have said fifteen. Legg put it in one question: why do they not report the $X$
+measurement? The lead may well have improved $X$ too; the video speaks as if it had, and the
+paper does not show it. Saying ``qubits 1000 times more reliable'' about a measurement of one
+of the two values a qubit needs is marketing.
+
+The rest of the video is the usual. Quantum computers will feed ``the exact, ground-truth
+answer'' into AI models so that Copilot can ``create materials and molecules''; they will find
+superconductors that work at room temperature. Part~\ref{part:problems} is about the problems
+whose cost is actually known, and these are not among them. The one honest line is about
+skepticism: ``there's many things that are proprietary, that we can't share all the details''.
+Legg found the bugs because the code of the protocol was public. A claim this size, from a
+program with a retraction behind it, needs more data, not less.
+
+\section{If it works}
+
+Suppose the next paper shows a long $X$ lifetime, measurements that are right almost every time,
+and a test that rules out the ordinary explanations. There would be a topological qubit, and it
+would still not be a quantum computer. As Section~\ref{sec:topological} explained, measuring and
+exchanging Majorana modes gives Clifford gates and nothing else, and the $T$ gate has to come from
+magic states, prepared outside the protection and purified at the cost that Part~\ref{part:qec}
+counts. Topological protection buys criterion 3 and a smaller overhead per logical qubit. It does
+not buy universality.
+
+Then there is the date. Microsoft's blog says the company ``cut our timeline in half'' and aims for
+a scalable quantum computer by 2029. What the United States government has done is narrower. In
+DARPA's Quantum Benchmarking Initiative, Microsoft is in Stage C, the final one, which it entered
+through an earlier pilot program. Stage C is an independent check of whether the proposed machine
+can be built as designed. On 7 October 2026 DARPA added Atom Computing, Diraq, IBM and IonQ to it,
+alongside Microsoft and PsiQuantum, and the program's own target for a utility-scale machine is
+2033. Being in Stage C means the design is being audited. It does not mean the qubit works.
+
+The row for topological qubits in the table of Chapter~\ref{ch:hardware} still says ``not shown''.
+After Majorana 2 it is still the honest entry. What changed in 2026 is the material: a lead
+superconductor and a gap more than twice as large gave a bit that holds for twenty seconds, and
+that is a real result. The qubit is still waiting for its $X$.
